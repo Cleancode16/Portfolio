@@ -1,0 +1,129 @@
+/* Palette for the hero illustration. Space-separated RGB channels, like the global tokens. */
+.workstation {
+  --w-desk: 238 235 230;
+  --w-desk-edge: 214 209 201;
+  --w-leg: 196 196 202;
+  --w-bezel: 44 44 50;
+  --w-aluminium: 206 207 212;
+  --w-aluminium-dark: 172 173 180;
+  --w-skin: 192 138 104;
+  --w-skin-shade: 160 108 80;
+  --w-hair: 30 25 24;
+  --w-hair-hi: 74 62 56;
+  --w-headphone-pad: 62 62 68;
+  --w-hoodie: 62 80 112;
+  --w-hoodie-shade: 47 61 88;
+  --w-chair: 34 34 38;
+  --w-chair-edge: 58 58 64;
+  --w-headphone: 24 24 28;
+  --w-pot: 228 224 218;
+  --w-leaf: 74 142 104;
+  --w-leaf-dark: 52 112 80;
+  --w-mug: 250 250 252;
+  --w-floor: 15 15 30;
+  --w-floor-alpha: 0.1;
+  --w-shirt: 108 99 255;
+  --w-shirt-shade: 84 76 220;
+  --w-shirt-hi: 150 143 255;
+  --w-ink-dark: 47 46 65;
+  --w-skin-deep: 128 84 62;
+}
+
+[data-theme='dark'] .workstation {
+  --w-desk: 46 46 52;
+  --w-desk-edge: 33 33 38;
+  --w-leg: 62 62 68;
+  --w-bezel: 18 18 22;
+  --w-aluminium: 128 129 138;
+  --w-aluminium-dark: 92 93 102;
+  --w-skin: 178 126 94;
+  --w-skin-shade: 146 98 72;
+  --w-hair: 14 12 12;
+  --w-hair-hi: 52 44 40;
+  --w-headphone-pad: 44 44 50;
+  --w-hoodie: 74 94 132;
+  --w-hoodie-shade: 56 72 104;
+  --w-chair: 22 22 26;
+  --w-chair-edge: 48 48 54;
+  --w-headphone: 10 10 12;
+  --w-pot: 74 74 80;
+  --w-leaf: 62 128 92;
+  --w-leaf-dark: 44 98 70;
+  --w-mug: 210 210 216;
+  --w-floor: 0 0 0;
+  --w-floor-alpha: 0.45;
+  --w-shirt: 118 110 250;
+  --w-shirt-shade: 92 84 214;
+  --w-shirt-hi: 156 150 255;
+  --w-ink-dark: 24 24 32;
+  --w-skin-deep: 112 74 56;
+}
+
+.workstation .f-desk { fill: rgb(var(--w-desk)); }
+.workstation .f-desk-edge { fill: rgb(var(--w-desk-edge)); }
+.workstation .f-leg { fill: rgb(var(--w-leg)); }
+.workstation .f-bezel { fill: rgb(var(--w-bezel)); }
+.workstation .f-screen { fill: rgb(var(--code-bg)); }
+.workstation .f-alu { fill: rgb(var(--w-aluminium)); }
+.workstation .f-alu-dark { fill: rgb(var(--w-aluminium-dark)); }
+.workstation .s-alu { stroke: rgb(var(--w-aluminium-dark)); }
+.workstation .f-skin { fill: rgb(var(--w-skin)); }
+.workstation .f-skin-shade { fill: rgb(var(--w-skin-shade)); }
+.workstation .f-hair { fill: rgb(var(--w-hair)); }
+.workstation .s-hair-hi { stroke: rgb(var(--w-hair-hi)); }
+.workstation .s-hair { stroke: rgb(var(--w-hair)); }
+.workstation .f-headphone-pad { fill: rgb(var(--w-headphone-pad)); }
+.workstation .s-hoodie-shade { stroke: rgb(var(--w-hoodie-shade)); }
+.workstation .f-hoodie { fill: rgb(var(--w-hoodie)); }
+.workstation .s-hoodie { stroke: rgb(var(--w-hoodie)); }
+.workstation .f-hoodie-shade { fill: rgb(var(--w-hoodie-shade)); }
+.workstation .f-chair { fill: rgb(var(--w-chair)); }
+.workstation .f-chair-edge { fill: rgb(var(--w-chair-edge)); }
+.workstation .f-headphone { fill: rgb(var(--w-headphone)); }
+.workstation .s-headphone { stroke: rgb(var(--w-headphone)); }
+.workstation .f-pot { fill: rgb(var(--w-pot)); }
+.workstation .f-leaf { fill: rgb(var(--w-leaf)); }
+.workstation .f-leaf-dark { fill: rgb(var(--w-leaf-dark)); }
+.workstation .f-mug { fill: rgb(var(--w-mug)); }
+.workstation .s-mug { stroke: rgb(var(--w-mug)); }
+.workstation .f-floor { fill: rgb(var(--w-floor) / var(--w-floor-alpha)); }
+.workstation .stop-glow-a { stop-color: rgb(var(--glow-a)); }
+.workstation .stop-glow-b { stop-color: rgb(var(--glow-b)); }
+
+/* Editor syntax colors stay constant: the screen is always a dark editor. */
+.workstation .c-dim { fill: #5c6370; }
+.workstation .c-blue { fill: #61afef; }
+.workstation .c-cyan { fill: #56d4e0; }
+.workstation .c-purple { fill: #c49bff; }
+.workstation .c-green { fill: #98c379; }
+.workstation .c-amber { fill: #e5c07b; }
+.workstation .c-text { fill: #abb2bf; }
+
+.workstation .cursor {
+  fill: #e6e6e6;
+  animation: workstation-blink 1.1s steps(1) infinite;
+}
+
+@keyframes workstation-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workstation .cursor { animation: none; }
+}
+
+.workstation .s-rim { stroke: rgb(var(--glow-b) / 0.55); }
+.workstation .f-ui { fill: #ffffff; }
+
+/* Flat figure (unDraw-style): indigo shirt, dark hair and chair, no outlines. */
+.workstation .f-shirt { fill: rgb(var(--w-shirt)); }
+.workstation .s-shirt { stroke: rgb(var(--w-shirt)); }
+.workstation .f-shirt-shade { fill: rgb(var(--w-shirt-shade)); }
+.workstation .s-shirt-shade { stroke: rgb(var(--w-shirt-shade)); }
+.workstation .s-shirt-hi { stroke: rgb(var(--w-shirt-hi) / 0.55); }
+.workstation .f-ink-dark { fill: rgb(var(--w-ink-dark)); }
+.workstation .f-skin-deep { fill: rgb(var(--w-skin-deep) / 0.55); }
+.workstation .s-skin-deep { stroke: rgb(var(--w-skin-deep) / 0.7); }
+.workstation .s-hair-sheen { stroke: rgb(255 255 255 / 0.16); }
+.workstation .s-hair-part { stroke: rgb(255 255 255 / 0.22); }
+.workstation .s-chair-line { stroke: rgb(255 255 255 / 0.06); }

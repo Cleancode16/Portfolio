@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devasani Bharath — Full-Stack Developer</title>
+    <meta
+      name="description"
+      content="Devasani Bharath is a full-stack developer and Computer Science student in Hyderabad building real-time, data-driven web applications with React, Node.js and MongoDB."
+    />
+    <meta name="theme-color" content="#fbfbfd" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0c" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="Devasani Bharath — Full-Stack Developer" />
+    <meta
+      property="og:description"
+      content="Projects, experience and competitive programming from a full-stack developer who builds thoughtful, useful software."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Apply the theme before first paint to avoid a flash of the wrong theme.
+      // Stored choice wins; otherwise follow the operating system.
+      ;(function () {
+        var theme = 'light'
+        try {
+          var stored = localStorage.getItem('portfolio-theme')
+          if (stored === 'light' || stored === 'dark') theme = stored
+          else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark'
+        } catch (e) {
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) theme = 'dark'
+        }
+        document.documentElement.setAttribute('data-theme', theme)
+        document.documentElement.style.colorScheme = theme
+      })()
+    </script>
+  </head>
+  <body>
+    <noscript>This portfolio needs JavaScript enabled to display its content.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
