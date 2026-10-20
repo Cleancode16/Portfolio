@@ -89,13 +89,34 @@ function isSpam(input) {
   return Number.isFinite(elapsed) && elapsed >= 0 && elapsed < MIN_FILL_TIME_MS
 }
 
-function originAllowed(origin, env) {
+// Placeholder values copied from .env.example must never lock the form.
+const PLACEHOLDER_ORIGINS = new Set(['https://your-portfolio.vercel.app'])
+
+const normaliseOrigin = (value) => value.trim().replace(/\/+$/, '').toLowerCase()
+
+function originHost(origin) {
+  try {
+    return new URL(origin).host.toLowerCase()
+  } catch {
+    return ''
+  }
+}
+
+/**
+ * Same-site requests (Origin host = the host serving this API) are always
+ * allowed, so a mismatched ALLOWED_ORIGINS can't break the site's own form.
+ * ALLOWED_ORIGINS only matters for other origins; entries are normalised
+ * (case, trailing slash) and unedited placeholders are ignored.
+ */
+function originAllowed(origin, host, env) {
+  if (!origin) return true
+  if (host && originHost(origin) === host.toLowerCase()) return true
   const allowed = (env.ALLOWED_ORIGINS || '')
     .split(',')
-    .map((o) => o.trim())
-    .filter(Boolean)
-  if (allowed.length === 0 || !origin) return true
-  return allowed.includes(origin)
+    .map(normaliseOrigin)
+    .filter((o) => o && !PLACEHOLDER_ORIGINS.has(o))
+  if (allowed.length === 0) return true
+  return allowed.includes(normaliseOrigin(origin))
 }
 
 async function sendWithResend(data, env) {
@@ -150,14 +171,15 @@ async function sendWithResend(data, env) {
  * Framework-agnostic handler.
  * @returns {Promise<{ status: number, body: object, headers?: object }>}
  */
-export async function handleContact({ method, body, ip, origin, contentType, env }) {
+export async function handleContact({ method, body, ip, origin, host, contentType, env }) {
   if (method !== 'POST') {
     return { status: 405, body: { ok: false, error: 'Method not allowed.' }, headers: { Allow: 'POST' } }
   }
   if (!contentType || !contentType.toLowerCase().includes('application/json')) {
     return { status: 415, body: { ok: false, error: 'Unsupported content type.' } }
   }
-  if (!originAllowed(origin, env)) {
+  if (!originAllowed(origin, host, env)) {
+    console.error(`[contact] Rejected origin ${origin} (host ${host || 'unknown'}). Check ALLOWED_ORIGINS.`)
     return { status: 403, body: { ok: false, error: 'This request is not allowed.' } }
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) {

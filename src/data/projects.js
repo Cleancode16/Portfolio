@@ -75,7 +75,7 @@ export const projects = [
       'Brings commerce, community and funding for artisans together, with role-specific workflows for every participant.',
     stack: ['React.js', 'Redux', 'Tailwind CSS', 'Node.js', 'Express.js', 'MongoDB', 'Socket.io', 'Gemini API'],
     repo: 'https://github.com/Cleancode16/Convergence',
-    live: null,
+    live: 'https://craftconnect-ix7v.vercel.app/',
     visual: 'marketplace',
   },
   {

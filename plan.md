@@ -42,6 +42,8 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 28 | Smooth dark ↔ light theme animation | Circular reveal from the toggle, cross-fade fallback |
 | 29 | npm output with warnings (Recharts deprecated, cache-dir) | Recharts 3 upgrade; cache-dir explained |
 | 30 | Vercel deployment hanging | Dev server was running instead of the build; build settings pinned in vercel.json |
+| 31 | Education: no score bars; separate square bento groups. Add the CraftConnect live link | Implemented |
+| 32 | Deployed contact form: "This request is not allowed" (403) | Origin check made robust; env values to fix |
 
 ---
 
@@ -469,6 +471,30 @@ instantly. The ⌘K theme command reveals from the navbar toggle area. Lint and 
 - **Fix:** pinned `framework`, `installCommand`, `buildCommand` (`npm run build`) and `outputDirectory` (`dist`)
   in `vercel.json`.
 - **cache-dir:** explained again; it is Vercel's environment and only a warning.
+
+## 31. Score-free education bento; CraftConnect live demo
+
+**Prompts:**
+- "don't add bars; separate the education and certifications like bento grid squares; don't add any bars for
+  scores and percentage".
+- Mid-task: "https://craftconnect-ix7v.vercel.app/ add this link to craftconnect".
+
+**Actions**
+- **Meters removed:** the CGPA ring, progress bar, percentage bar and score dots are gone.
+- **New pictures:** campus building, MPC formula tiles and an open book.
+- **Layout:** Education and Certifications are now separate groups of square bento cards; results stay as text.
+- **CraftConnect:** live demo URL verified (HTTP 200) and added.
+- **Checks:** lint and build passed.
+
+## 32. Contact form 403 after deployment
+
+**Prompt:** a screenshot of "This request is not allowed." and console 403s on `/api/contact`.
+
+**Actions:**
+- **Cause:** a mismatched `ALLOWED_ORIGINS` on Vercel, most likely the pasted `.env.example` placeholder.
+- **Fix:** the origin check always allows the site's own domain, normalises entries, ignores placeholders and
+  logs rejections. Verified in Node.
+- **User:** check every Vercel environment variable for placeholder values (see the final note).
 
 ---
 

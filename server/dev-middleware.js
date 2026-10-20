@@ -45,6 +45,7 @@ export function contactApiMiddleware(env) {
       body,
       ip: req.socket?.remoteAddress,
       origin: req.headers.origin,
+      host: req.headers.host,
       contentType: req.headers['content-type'],
       env,
     })

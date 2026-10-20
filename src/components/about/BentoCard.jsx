@@ -15,7 +15,7 @@ const DOT_GRID = {
  * timeline; it plays only while the card is on screen. gsap.context (inside
  * useGsap) reverts it on unmount, and nothing runs for reduced motion.
  */
-export default function BentoCard({ Illustration, title, text, children, className = '' }) {
+export default function BentoCard({ Illustration, title, text, children, className = '', square = false }) {
   const sceneRef = useRef(null)
 
   useGsap(sceneRef, () => {
@@ -38,7 +38,7 @@ export default function BentoCard({ Illustration, title, text, children, classNa
   return (
     <article
       onPointerMove={onPointerMove}
-      className={`group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line/70 bg-surface p-2.5 shadow-soft transition duration-300 ease-apple hover:-translate-y-1 hover:border-ink/20 hover:shadow-lift motion-reduce:hover:translate-y-0 ${className}`}
+      className={`group relative flex h-full flex-col overflow-hidden rounded-3xl border ${square ? 'aspect-square' : ''} border-line/70 bg-surface p-2.5 shadow-soft transition duration-300 ease-apple hover:-translate-y-1 hover:border-ink/20 hover:shadow-lift motion-reduce:hover:translate-y-0 ${className}`}
     >
       {/* Soft light that follows the pointer while hovering. */}
       <span
@@ -51,12 +51,14 @@ export default function BentoCard({ Illustration, title, text, children, classNa
       />
       <div
         ref={sceneRef}
-        className="relative h-44 overflow-hidden rounded-[1.125rem] border border-line/60 bg-canvas sm:h-48"
+        className={`relative overflow-hidden rounded-[1.125rem] border border-line/60 bg-canvas ${
+          square ? 'min-h-[7.5rem] flex-1' : 'h-44 sm:h-48'
+        }`}
         style={DOT_GRID}
       >
         <Illustration />
       </div>
-      <div className="relative flex flex-1 flex-col px-3 pb-4 pt-5 sm:px-4">
+      <div className={`relative flex flex-col px-3 pb-4 pt-5 sm:px-4 ${square ? 'flex-none' : 'flex-1'}`}>
         {title && <h3 className="text-[1.0625rem] font-semibold tracking-tight text-ink">{title}</h3>}
         {text && <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{text}</p>}
         {children}

@@ -471,3 +471,35 @@ graphs from all three sites)
   build machines, not this project. Warning only.
 - The local build produces `dist/` correctly. The Root Directory must still be `portfolio` in the Vercel dashboard
   (it can't be set in `vercel.json`).
+
+## Education bento: no score meters, separate square groups; CraftConnect live link — 2026-10-20
+- User: no bars for scores or percentages; separate Education and Certifications as square bento cards.
+- `src/components/education/illustrations.jsx`: removed the CGPA ring, degree progress track, 97.7% bar and
+  10/10 dots (and their count-up helper). New pictorial, score-free scenes, each playing once:
+  - `Campus` (VNR VJIET): a building whose columns rise and flag unfurls; caption "B.Tech · Computer Science";
+  - `Mpc` (Narayana): Mathematics / Physics / Chemistry formula tiles;
+  - `Book` (St. Paul's): an open book whose page turns.
+  `SmartCoder` and `DsaCourse` unchanged.
+- `src/components/about/BentoCard.jsx`: optional `square` prop (`aspect-square` card; the illustration well
+  flexes, min 7.5rem, so the text always fits). About cards unchanged.
+- `src/components/sections/Education.jsx`: two separate groups, "Education" (3 cards) and "Certifications"
+  (2 cards), each with an icon heading and its own square grid (1 / 2 / 3 columns). Results stay as plain text
+  on the cards (CGPA 8.97 / 10, 97.7%, CGPA 10 / 10).
+- `src/data/projects.js`: CraftConnect `live` set to https://craftconnect-ix7v.vercel.app/ (verified HTTP 200);
+  it now shows "Live demo" on the card and in the case-study window.
+- Lint and build pass; the old meter text is absent from the bundle.
+
+## Contact form 403 after deployment — 2026-10-20
+- Symptom: deployed form showed "This request is not allowed." (`/api/contact` 403). That response comes only
+  from the origin check, so `ALLOWED_ORIGINS` on Vercel didn't match the site's Origin. Likely the
+  `.env.example` placeholder (`https://your-portfolio.vercel.app`) was pasted, or a trailing slash or preview URL.
+- `server/contact.js`: same-site requests (Origin host = serving host, from `x-forwarded-host` / `host`) are
+  always allowed. `ALLOWED_ORIGINS` entries are normalised (case, trailing slash), the `.env.example`
+  placeholder is ignored, and rejections are logged with origin and host. `api/contact.js` and
+  `server/dev-middleware.js` pass `host`.
+- Verified in Node: same-site passes even with the placeholder; a normalised custom domain passes; a foreign
+  origin is still 403. Lint and build pass.
+- Follow-up: the user's value was `ALLOWED_ORIGINS=https://devasanibharath.vercel.app/` (Vercel and local `.env`).
+  Its trailing slash never matches a browser Origin header, which confirms the cause. The updated code
+  accepts this exact value (verified in Node). Recommended removing the slash anyway and redeploying with the
+  new code; the user's `.env` was not edited.

@@ -29,6 +29,7 @@ export default async function handler(req, res) {
     body,
     ip: clientIp(req),
     origin: req.headers.origin,
+    host: req.headers['x-forwarded-host'] || req.headers.host,
     contentType: req.headers['content-type'],
     env: process.env,
   })
