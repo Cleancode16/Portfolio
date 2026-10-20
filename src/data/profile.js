@@ -52,8 +52,19 @@ export const heroRoles = [
   'Full-Stack AI Developer',
 ]
 
-// Résumé-backed figures shown as one understated line in the hero.
-export const heroFacts = ['600+ problems solved', 'Class of 2027', 'CGPA 8.97/10']
+// "Currently" list at the bottom of the hero illustration card (the developer's stated interests).
+export const heroCurrently = [
+  'Building full-stack products with React, Node.js and MongoDB',
+  'Studying system design and scalable architecture',
+  'Competing on LeetCode, CodeChef and Codeforces',
+]
+
+// Résumé-backed figures shown in the hero's highlights card.
+export const heroStats = [
+  { value: '600+', label: 'Problems solved' },
+  { value: '2027', label: 'Graduating' },
+  { value: '8.97/10', label: 'CGPA' },
+]
 
 export const experience = [
   {

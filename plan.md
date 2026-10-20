@@ -44,6 +44,9 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 30 | Vercel deployment hanging | Dev server was running instead of the build; build settings pinned in vercel.json |
 | 31 | Education: no score bars; separate square bento groups. Add the CraftConnect live link | Implemented |
 | 32 | Deployed contact form: "This request is not allowed" (403) | Origin check made robust; env values to fix |
+| 33 | Bento design for the hero | Implemented |
+| 34 | Fill empty hero space with text; remove glow; ruled lines background | Implemented |
+| 35 | Aceternity-style grid-with-dots background for the page; no lines in the hero | Implemented |
 
 ---
 
@@ -495,6 +498,43 @@ instantly. The ⌘K theme command reveals from the navbar toggle area. Lint and 
 - **Fix:** the origin check always allows the site's own domain, normalises entries, ignores placeholders and
   logs rejections. Verified in Node.
 - **User:** check every Vercel environment variable for placeholder values (see the final note).
+
+## 33. Hero as a bento grid
+
+**Prompt:** "add bento design to make it neat and clean" (hero screenshot).
+
+**Actions:** Rebuilt the hero layout as bento cards: a large intro card, a tall illustration card (CI card and
+"Developer mode" kept), a roles card and a highlights card (600+ / 2027 / CGPA 8.97 as stat blocks, no bars).
+The layout is responsive (1 → 2 → 12-column grid), with a staggered entrance. Lint and build passed.
+
+## 34. Hero: no empty space, ruled-page lines
+
+**Prompt:** "remaining space keep text so that space will not be there; remove that shadow at the back; just add
+lines (white lines for the black background, black lines for the white background), not boxes, like lines in a
+page".
+
+**Actions:**
+- **Empty space:** a "Currently" text block now fills the illustration card's empty space.
+- **Shadows and glow:** card shadows, the hero glow and the glow behind the monitor were removed.
+- **Lines:** the background is now faint horizontal ruled lines in the theme's text colour, fading out at the
+  bottom.
+- **Checks:** lint and build passed.
+
+## 35. Animated grid-and-dots page background
+
+**Prompts:**
+- "I want this type of design (Aceternity background grid with dots and animations) in the background of the
+  page for the white and dark themes".
+- Mid-task: "remove the lines on the background in the hero section".
+
+**Actions:**
+- **New `GridBackground`:** a single canvas behind the whole page.
+  - An 80px grid with dots, in light-on-dark or dark-on-light theme colours.
+  - Lines and dots bend away from the cursor in a wave and glow in the accent colour, easing back when the mouse
+    leaves.
+  - Static on touch devices and with reduced motion.
+- **Hero:** the ruled lines were removed, and the hero background now covers the grid, fading in at its bottom.
+- **Checks:** lint and build passed.
 
 ---
 

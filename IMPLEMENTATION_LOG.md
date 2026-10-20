@@ -503,3 +503,50 @@ graphs from all three sites)
   Its trailing slash never matches a browser Origin header, which confirms the cause. The updated code
   accepts this exact value (verified in Node). Recommended removing the slash anyway and redeploying with the
   new code; the user's `.env` was not edited.
+
+## Hero as a bento grid — 2026-10-20
+- `src/components/hero/Hero.jsx` laid out as bento cards (shared surface: rounded-3xl, fine border, translucent
+  surface, blur, soft shadow):
+  - intro card (lg 7 cols × 2 rows): eyebrow, headline (clamped 2.25–4.25rem so it fits the card), description,
+    "Explore My Work" and "Get in Touch";
+  - illustration card (lg 5 cols × 3 rows): the workstation scene with the CI pipeline card and "Developer mode"
+    chip, unchanged;
+  - roles card (lg 4 cols): the five role tags;
+  - highlights card (lg 3 cols): 600+ problems solved, Graduating 2027, CGPA 8.97/10 as plain stat blocks.
+  Layout is 1 column on phones, 2 on tablets (intro and illustration full width), 12-column bento on desktop.
+  Cards enter with the existing staggered GSAP timeline (after the boot intro).
+- `src/data/profile.js`: `heroFacts` (strings) replaced by `heroStats` (`{ value, label }`).
+- Lint and build pass.
+
+## Hero bento: fill the empty space; ruled lines instead of glow — 2026-10-20
+- `Hero.jsx`:
+  - The illustration card is now a flex column; the scene sits on top and a "Currently" block fills the rest
+    (border-top, `mt-auto`), using the user's stated interests (`heroCurrently` in `profile.js`): building
+    full-stack products with React, Node.js and MongoDB; studying system design and scalable architecture;
+    competing on LeetCode, CodeChef and Codeforces.
+  - Card shadows removed (border plus translucent fill only).
+  - The ambient glow background was replaced by `.hero-lines`.
+- `index.css`: new `.hero-lines`, horizontal ruled lines every 40px in `rgb(var(--ink) / 0.07)` (light lines
+  on the dark theme, dark lines on the light theme), masked to fade out toward the bottom. Lines only, no boxes.
+- `CodingIllustration.jsx`: removed the blue glow behind the monitor (two ellipses) and their unused gradient
+  defs.
+- Lint and build pass.
+
+## Page grid background (Aceternity-style); no lines in the hero — 2026-10-20
+- Reference: Aceternity "background grid with dots and animations" (source paywalled; public description: 80px
+  grid, 2px dots at intersections, lines bending in a wave near the cursor with a distance-based glow, lerped
+  animation that stops when the mouse leaves, separate light and dark colours).
+- **New** `src/components/layout/GridBackground.jsx`, mounted once in `App.jsx`: a fixed full-page `<canvas>`
+  (`-z-10`, `pointer-events-none`):
+  - 80px grid drawn in the theme's text colour at low alpha (light on dark, dark on light), dots at
+    intersections;
+  - near the mouse, lines and dots are pushed outward (160px radius, max 14px) and glow in the accent colour,
+    with smoothed pointer and intensity; the rAF loop stops once settled;
+  - scrolls with the page (redraw on scroll); DPR-aware; resize handled; theme colours re-read in a layout
+    effect so the theme-reveal snapshot is correct;
+  - static on touch devices and with reduced motion; full cleanup on unmount.
+  `index.css`: `.grid-background` radial vignette mask.
+- The hero's ruled lines (`.hero-lines`) were removed. Follow-up ("remove the lines in the hero"): the hero has a
+  solid `--canvas` background that fades over its last 18%, so no grid lines appear behind the hero and the grid
+  eases in from the About section down.
+- Lint and build pass.

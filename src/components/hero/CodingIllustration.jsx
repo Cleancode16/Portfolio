@@ -52,14 +52,6 @@ export default function CodingIllustration({ className = '' }) {
         code and a laptop running tests and a deploy
       </title>
       <defs>
-        <radialGradient id="ws-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" className="stop-glow-a" stopOpacity="0.3" />
-          <stop offset="100%" className="stop-glow-a" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="ws-glow-b" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" className="stop-glow-b" stopOpacity="0.2" />
-          <stop offset="100%" className="stop-glow-b" stopOpacity="0" />
-        </radialGradient>
         <linearGradient id="ws-sheen" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.07" />
           <stop offset="45%" stopColor="#ffffff" stopOpacity="0" />
@@ -69,9 +61,6 @@ export default function CodingIllustration({ className = '' }) {
         </clipPath>
       </defs>
 
-      {/* Ambient light from the screens */}
-      <ellipse className="ws-ambient" cx="200" cy="170" rx="260" ry="190" fill="url(#ws-glow)" />
-      <ellipse cx="500" cy="300" rx="130" ry="100" fill="url(#ws-glow-b)" />
 
       {/* Desk */}
       <rect className="f-leg" x="44" y="378" width="12" height="162" rx="3" />

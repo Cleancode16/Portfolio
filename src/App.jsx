@@ -1,6 +1,7 @@
 import Navbar from './components/layout/Navbar'
 import CommandPalette from './components/layout/CommandPalette'
 import BootIntro from './components/intro/BootIntro'
+import GridBackground from './components/layout/GridBackground'
 import Footer from './components/layout/Footer'
 import Hero from './components/hero/Hero'
 import About from './components/sections/About'
@@ -29,6 +30,7 @@ export default function App() {
         Skip to content
       </a>
       <BootIntro />
+      <GridBackground />
       <Navbar />
       <CommandPalette />
       <main id="main" ref={mainRef} tabIndex={-1} className="focus:outline-none">
