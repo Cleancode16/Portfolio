@@ -37,7 +37,7 @@ export default function CpRatingsChart({ data }) {
   return (
     <div className="h-[260px] w-full" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 28, right: 4, bottom: 0, left: -12 }} barCategoryGap="30%">
+        <BarChart accessibilityLayer={false} data={data} margin={{ top: 28, right: 4, bottom: 0, left: -12 }} barCategoryGap="30%">
           <CartesianGrid vertical={false} stroke={colors.grid} />
           <XAxis dataKey="platform" tickLine={false} axisLine={false} tick={{ ...tick, fill: colors.ink }} dy={6} />
           <YAxis

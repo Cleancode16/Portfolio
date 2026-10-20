@@ -430,3 +430,33 @@ graphs from all three sites)
 - `CompetitiveProgramming.jsx`: section `id="problem-solving"`, eyebrow "Problem solving".
 - Kept as-is: sentences describing competitive programming as an activity (About card, CodeBattle tagline,
   chart text) and internal file/component names. No links referenced the old anchor. Lint and build pass.
+
+## Smooth theme switching — 2026-10-20
+- `src/hooks/useThemeToggle.js`:
+  - With the View Transitions API (Chrome, Edge, Safari 18+), `document.startViewTransition` snapshots the old
+    theme and the new theme is revealed by a `clip-path` circle growing from the clicked toggle (0.56s,
+    `cubic-bezier(0.22, 1, 0.36, 1)`), animated on `::view-transition-new(root)`.
+  - The ⌘K command (no click event) reveals from the navbar toggle area, top right.
+  - Inside the transition, `data-theme` is applied first and Recoil is updated with `flushSync`, so the new
+    snapshot (including the Recharts colours and toggle icons) is already final.
+  - Fallback (no View Transitions, e.g. older Firefox): the colour cross-fade, now 0.5s with the same easing and
+    including box-shadows. Reduced motion: instant switch.
+- `src/index.css`: `html.theme-reveal::view-transition-old/new(root)` disables the default snapshot cross-fade
+  and stacks the new snapshot on top; the `.theme-transition` fallback rule updated.
+- Lint and build pass.
+- Follow-up ("little bit slow"): reveal lengthened 0.56s → 0.9s with an ease-in-out curve
+  `cubic-bezier(0.65, 0, 0.35, 1)`; fallback cross-fade 0.5s → 0.8s with the same curve. Lint and build pass.
+
+## Recharts 3 upgrade; npm warnings — 2026-10-20
+- The user's `npm install` showed "recharts@2.15.4 deprecated" (the 2.x branch is no longer maintained). Upgraded
+  to `recharts@^3.10.1` and added its peer `react-is@^18.3.1`. Recharts 3 supports React 18. It uses Redux
+  Toolkit internally for its own chart state; that is internal to the library, and the app's shared state is still
+  Recoil only.
+- Recharts 3 enables `accessibilityLayer` by default (focusable chart SVG). The charts sit inside `aria-hidden`
+  wrappers with visible text summaries, so `accessibilityLayer={false}` was set on all three charts
+  (`CpLiveCharts.jsx` ×2, `CpRatingsChart.jsx` ×1) to avoid focusable content inside `aria-hidden`.
+- The other warning, `Unknown env config "cache-dir"`, comes from the user's machine, not the project: no
+  `.npmrc` in the project or home folder and no `npm_config_cache_dir` in User/Machine environment variables or
+  this shell. `npm config ls -l` shows the valid `cache` setting. Harmless; the user can remove the variable
+  from wherever it is defined.
+- Lint and build pass. Charts still need a browser check after the major-version upgrade.

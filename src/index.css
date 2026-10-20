@@ -125,18 +125,37 @@
   }
 }
 
-/* Smooth color change while switching themes. Added briefly by the toggle. */
+/* Theme switching.
+   1) Browsers with View Transitions: the new theme is revealed in an expanding circle
+      from the toggle (animation driven from useThemeToggle). The default cross-fade of
+      the snapshots is disabled so only the circular reveal is visible.
+   2) Fallback: a short color cross-fade, applied briefly via .theme-transition. */
+html.theme-reveal::view-transition-old(root),
+html.theme-reveal::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html.theme-reveal::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.theme-reveal::view-transition-new(root) {
+  z-index: 2;
+}
+
 html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
   transition:
-    background-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-    border-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-    color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-    fill 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-    stroke 0.35s cubic-bezier(0.25, 0.1, 0.25, 1),
-    stop-color 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+    background-color 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    border-color 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    color 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    fill 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    stroke 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    stop-color 0.8s cubic-bezier(0.65, 0, 0.35, 1),
+    box-shadow 0.8s cubic-bezier(0.65, 0, 0.35, 1) !important;
 }
 
 @layer components {

@@ -39,6 +39,8 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 25 | Replace only the avatar with a hand-drawn hoodie developer | Implemented |
 | 26 | "I want the previous one, only better" | Flat avatar restored and refined |
 | 27 | Rename "Competitive Programming" to "Problem Solving" | Renamed (nav, anchor, eyebrow) |
+| 28 | Smooth dark ↔ light theme animation | Circular reveal from the toggle, cross-fade fallback |
+| 29 | npm output with warnings (Recharts deprecated, cache-dir) | Recharts 3 upgrade; cache-dir explained |
 
 ---
 
@@ -437,12 +439,31 @@ and "Developer mode" unchanged; no watermark.
 "Problem solving". The navbar, mobile menu, ⌘K palette and footer follow automatically. Descriptive sentences
 about competitive programming were kept. Lint and build passed.
 
+## 28. Smooth theme switching
+
+**Prompt:** "dark theme to white theme and vice versa need to be done in smooth animations".
+
+**Actions:** The theme toggle uses the View Transitions API to reveal the new theme in a circle expanding from
+the toggle (0.56s, macOS-style). Where unsupported, colours cross-fade over 0.5s; reduced motion switches
+instantly. The ⌘K theme command reveals from the navbar toggle area. Lint and build passed.
+- **Follow-up** ("little bit slow"): slowed the reveal to 0.9s and the fallback fade to 0.8s, with a gentler
+  ease-in-out curve.
+
+## 29. npm warnings
+
+**Prompt:** pasted `npm install` / `npm run dev` output with two warnings.
+
+**Actions:**
+- **Recharts:** upgraded 2.15.4 → 3.10.1 (+ `react-is`); `accessibilityLayer={false}` on the charts.
+- **`cache-dir`:** traced to the user's machine configuration, not the project. Harmless; explained how to clear it.
+- **Checks:** lint and build passed.
+
 ---
 
 ## Current state
 
 - **Stack:** React 18.3.1, Vite 8, Tailwind CSS 3.4, Recoil 0.7.7, GSAP 3.13, lucide-react, simple-icons,
-  Recharts 2.15, react-hook-form.
+  Recharts 3.10, react-hook-form.
 - **Page order:** Home → About → Projects → Skills → Experience → Education → Problem Solving → Contact.
 - **Every step passed:** `npm run lint` and `npm run build`.
 - **Privacy:** no email address or phone number in the UI or the built bundle; the recipient and API key exist

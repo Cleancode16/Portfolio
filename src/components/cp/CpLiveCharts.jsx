@@ -110,7 +110,7 @@ export default function CpLiveCharts({ platforms }) {
       {/* Rating history */}
       <div className="mt-5 h-[240px] w-full" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart key={current.platform} data={current.history} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
+          <AreaChart accessibilityLayer={false} key={current.platform} data={current.history} margin={{ top: 8, right: 8, bottom: 0, left: -8 }}>
             <defs>
               <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.28} />
@@ -159,7 +159,7 @@ export default function CpLiveCharts({ platforms }) {
           <p className="text-[0.8125rem] font-medium text-muted">Rated contests by platform</p>
           <div className="mt-3 h-[120px] w-full" aria-hidden="true">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={contestsData} layout="vertical" margin={{ top: 0, right: 32, bottom: 0, left: 0 }} barCategoryGap="28%">
+              <BarChart accessibilityLayer={false} data={contestsData} layout="vertical" margin={{ top: 0, right: 32, bottom: 0, left: 0 }} barCategoryGap="28%">
                 <XAxis type="number" hide domain={[0, 'dataMax']} />
                 <YAxis type="category" dataKey="platform" tickLine={false} axisLine={false} tick={{ ...tick, fill: colors.ink }} width={84} />
                 <Tooltip cursor={{ fill: colors.cursor }} content={<ContestsTooltip />} isAnimationActive={false} />
