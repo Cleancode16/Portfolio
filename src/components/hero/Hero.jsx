@@ -2,10 +2,11 @@ import { useRef } from 'react'
 import { useRecoilValue } from 'recoil'
 import { ArrowDown, ArrowRight, BadgeCheck, CircleCheck, LoaderCircle, Sparkles } from 'lucide-react'
 import CodingIllustration from './CodingIllustration'
+import TechIcon from '../skills/TechIcon'
 import { gsap, EASE } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
 import { introPlayingState } from '../../state/ui'
-import { heroCurrently, heroRoles, heroStats } from '../../data/profile'
+import { dockStack, heroCurrently, heroRoles, heroStats, skillGroups } from '../../data/profile'
 
 // Decorative CI status beside the hero illustration: stages only, no figures.
 const PIPELINE = [
@@ -13,6 +14,11 @@ const PIPELINE = [
   { step: 'Tests', state: 'passed' },
   { step: 'Deploy', state: 'running' },
 ]
+
+// Core stack icons for the illustration card, in Dock order.
+const STACK = dockStack
+  .map((name) => skillGroups.flatMap((group) => group.items).find((item) => item.name === name))
+  .filter(Boolean)
 
 // Shared bento card surface for the hero: fine border, translucent fill, no shadow.
 const CARD = 'rounded-3xl border border-line/70 bg-surface/60 backdrop-blur-xl'
@@ -86,6 +92,8 @@ export default function Hero() {
           data-hero="visual"
           className={`${CARD} relative flex flex-col overflow-hidden p-3 sm:p-5 md:col-span-2 lg:col-span-5 lg:row-span-3`}
         >
+          {/* Scene centred in the space above the stack row and "Currently". */}
+          <div className="flex flex-1 items-center justify-center">
           <div className="relative mx-auto aspect-[600/540] w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-none">
             <CodingIllustration className="absolute inset-0 h-full w-full" />
 
@@ -129,9 +137,25 @@ export default function Hero() {
               </div>
             </div>
           </div>
+          </div>
+
+          {/* Core stack as app icons (same set as the Skills Dock). */}
+          <div className="mt-4 border-t border-line/60 px-3 pt-5 sm:px-2">
+            <p id="hero-stack" className="font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted">
+              Stack
+            </p>
+            <ul aria-labelledby="hero-stack" className="mt-3 flex flex-wrap gap-2">
+              {STACK.map((item) => (
+                <li key={item.name} title={item.name} className="transition-transform duration-200 ease-apple hover:-translate-y-0.5">
+                  <TechIcon icon={item.icon} className="h-9 w-9" />
+                  <span className="sr-only">{item.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* Fills the rest of the tall card with text instead of empty space. */}
-          <div className="mt-auto border-t border-line/60 px-3 pb-2 pt-5 sm:px-2">
+          <div className="mt-5 border-t border-line/60 px-3 pb-2 pt-5 sm:px-2">
             <p className="font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted">Currently</p>
             <ul className="mt-3 space-y-2.5">
               {heroCurrently.map((item) => (
@@ -145,17 +169,22 @@ export default function Hero() {
         </div>
 
         {/* Roles */}
-        <div data-hero="text" className={`${CARD} p-6 lg:col-span-4`}>
+        <div data-hero="text" className={`${CARD} flex flex-col p-6 lg:col-span-4`}>
           <p id="hero-roles" className="flex items-center gap-2 text-[0.8125rem] font-medium text-muted">
             <BadgeCheck aria-hidden="true" className="h-4 w-4 text-accent" strokeWidth={1.75} />
             Roles
           </p>
-          <ul aria-labelledby="hero-roles" className="mt-4 flex flex-wrap gap-1.5">
+          {/* One role per row, spread evenly down the card (matches the Highlights card). */}
+          <ul aria-labelledby="hero-roles" className="mt-3 flex flex-1 flex-col justify-between divide-y divide-line/60">
             {heroRoles.map((role) => (
               <li
                 key={role}
-                className="rounded-lg border border-line/70 bg-canvas/60 px-2.5 py-1 text-[0.8125rem] leading-5 text-ink/85 transition-colors duration-200 hover:border-ink/25 hover:text-ink"
+                className="group flex items-center gap-3 py-2.5 text-[0.9375rem] font-medium text-ink/85 transition-colors duration-200 last:pb-0 hover:text-ink"
               >
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 flex-none rounded-full bg-accent/70 transition-colors duration-200 group-hover:bg-accent"
+                />
                 {role}
               </li>
             ))}
@@ -163,16 +192,22 @@ export default function Hero() {
         </div>
 
         {/* Highlights */}
-        <div data-hero="text" className={`${CARD} p-6 lg:col-span-3`}>
+        <div data-hero="text" className={`${CARD} flex flex-col p-6 lg:col-span-3`}>
           <p className="flex items-center gap-2 text-[0.8125rem] font-medium text-muted">
             <Sparkles aria-hidden="true" className="h-4 w-4 text-accent" strokeWidth={1.75} />
             Highlights
           </p>
-          <dl className="mt-4 grid grid-cols-3 gap-3 lg:grid-cols-1 lg:gap-3.5">
+          {/* One full-width row per stat: value, label and a short description, spread evenly down the card. */}
+          <dl className="mt-3 flex flex-1 flex-col justify-between divide-y divide-line/60">
             {heroStats.map((stat) => (
-              <div key={stat.label} className="flex flex-col-reverse">
-                <dt className="mt-0.5 text-[0.75rem] text-muted">{stat.label}</dt>
-                <dd className="text-[1.25rem] font-semibold leading-none tracking-tight text-ink">{stat.value}</dd>
+              <div key={stat.label} className="flex items-baseline gap-4 py-3 last:pb-0">
+                <dt className="order-2 min-w-0 text-[0.8125rem] leading-snug text-muted">
+                  <span className="font-medium text-ink/85">{stat.label}</span>
+                  <span className="block">{stat.detail}</span>
+                </dt>
+                <dd className="order-1 w-[4.75rem] flex-none text-[1.25rem] font-semibold leading-none tracking-tight text-ink">
+                  {stat.value}
+                </dd>
               </div>
             ))}
           </dl>

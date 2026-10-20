@@ -47,6 +47,8 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 33 | Bento design for the hero | Implemented |
 | 34 | Fill empty hero space with text; remove glow; ruled lines background | Implemented |
 | 35 | Aceternity-style grid-with-dots background for the page; no lines in the hero | Implemented |
+| 36 | Fill the empty space in the hero Highlights card with text | Implemented |
+| 37 | Roles: no compressed tags, one after another | Implemented |
 
 ---
 
@@ -537,6 +539,20 @@ page".
 - **Follow-up** ("hero section background design missing, add there also"): the hero's covering background was
   removed, so the grid shows behind the hero too.
 - **Checks:** lint and build passed.
+
+## 36. Highlights card without empty space
+
+**Prompt:** "cover the space with the text" (screenshot of the Highlights card).
+
+**Actions:** Each stat is now a full-width row (value plus label and a short factual description) with dividers,
+spread to fill the card. Lint and build passed.
+
+## 37. Roles one per row
+
+**Prompt:** "don't compress them and keep them one after another" (screenshot of the Roles card).
+
+**Actions:** Replaced the wrapped tag cluster with one role per row (accent dot plus divider), spread to fill
+the card like the Highlights card. Lint and build passed.
 
 ---
 

@@ -61,9 +61,9 @@ export const heroCurrently = [
 
 // Résumé-backed figures shown in the hero's highlights card.
 export const heroStats = [
-  { value: '600+', label: 'Problems solved' },
-  { value: '2027', label: 'Graduating' },
-  { value: '8.97/10', label: 'CGPA' },
+  { value: '600+', label: 'Problems solved', detail: 'Across LeetCode, CodeChef and Codeforces' },
+  { value: '2027', label: 'Graduating', detail: 'B.Tech CSE, VNR VJIET, Hyderabad' },
+  { value: '8.97/10', label: 'CGPA', detail: 'B.Tech in Computer Science and Engineering' },
 ]
 
 export const experience = [

@@ -553,3 +553,15 @@ graphs from all three sites)
 - Follow-up ("hero section background design missing, add there also"): the user meant the old ruled lines, not
   the grid. Removed the hero's solid `--canvas` background so the animated grid shows behind the hero too.
   Lint and build pass.
+
+## Hero highlights fill their card — 2026-10-20
+- `Hero.jsx`: the Highlights card is a flex column; each stat is a full-width row (value on the left; label and
+  a short description filling the rest) with dividers, spread evenly to the card's height. Valid `dt`→`dd`
+  order with CSS `order` keeps the value visually first.
+- `profile.js`: `heroStats` gained `detail` text from facts already on the site (600+ across LeetCode, CodeChef and
+  Codeforces; graduating 2027, B.Tech CSE, VNR VJIET, Hyderabad; CGPA in B.Tech CSE). Lint and build pass.
+
+## Hero roles listed one per row — 2026-10-20
+- `Hero.jsx`: the Roles card is a flex column; the five roles are full-width rows (accent dot plus role) with
+  dividers, spread evenly to fill the card, matching the Highlights card. Replaces the wrapped tag cluster.
+  Lint and build pass.
