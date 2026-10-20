@@ -460,3 +460,14 @@ graphs from all three sites)
   this shell. `npm config ls -l` shows the valid `cache` setting. Harmless; the user can remove the variable
   from wherever it is defined.
 - Lint and build pass. Charts still need a browser check after the major-version upgrade.
+
+## Vercel deployment hanging — 2026-10-20
+- The user's Vercel build log showed `[vite] (client) [optimizer] bundling dependencies...`, which only the Vite
+  dev server prints, so Vercel was running the dev server (`npm run dev`), which never exits; the deployment
+  hung. The project scripts are correct (`build` = `vite build`), so the Vercel project setting was wrong.
+- `vercel.json` now pins `framework: "vite"`, `installCommand: "npm install"`, `buildCommand: "npm run build"`
+  and `outputDirectory: "dist"` (these override the dashboard), keeping the `/api/`-excluding SPA rewrite.
+- The `Unknown env config "cache-dir"` warning also appears on Vercel: it comes from the npm environment of the
+  build machines, not this project. Warning only.
+- The local build produces `dist/` correctly. The Root Directory must still be `portfolio` in the Vercel dashboard
+  (it can't be set in `vercel.json`).

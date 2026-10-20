@@ -41,6 +41,7 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 27 | Rename "Competitive Programming" to "Problem Solving" | Renamed (nav, anchor, eyebrow) |
 | 28 | Smooth dark ↔ light theme animation | Circular reveal from the toggle, cross-fade fallback |
 | 29 | npm output with warnings (Recharts deprecated, cache-dir) | Recharts 3 upgrade; cache-dir explained |
+| 30 | Vercel deployment hanging | Dev server was running instead of the build; build settings pinned in vercel.json |
 
 ---
 
@@ -457,6 +458,17 @@ instantly. The ⌘K theme command reveals from the navbar toggle area. Lint and 
 - **Recharts:** upgraded 2.15.4 → 3.10.1 (+ `react-is`); `accessibilityLayer={false}` on the charts.
 - **`cache-dir`:** traced to the user's machine configuration, not the project. Harmless; explained how to clear it.
 - **Checks:** lint and build passed.
+
+## 30. Vercel deployment hanging
+
+**Prompt:** a Vercel build log (with the cache-dir warning) and "this mistake keeps happening".
+
+**Actions:**
+- **Diagnosis:** `[vite] (client) [optimizer]` in the log shows Vercel was running the dev server, not a build,
+  so the deployment never finished.
+- **Fix:** pinned `framework`, `installCommand`, `buildCommand` (`npm run build`) and `outputDirectory` (`dist`)
+  in `vercel.json`.
+- **cache-dir:** explained again; it is Vercel's environment and only a warning.
 
 ---
 
