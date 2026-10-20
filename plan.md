@@ -534,6 +534,8 @@ page".
     leaves.
   - Static on touch devices and with reduced motion.
 - **Hero:** the ruled lines were removed, and the hero background now covers the grid, fading in at its bottom.
+- **Follow-up** ("hero section background design missing, add there also"): the hero's covering background was
+  removed, so the grid shows behind the hero too.
 - **Checks:** lint and build passed.
 
 ---

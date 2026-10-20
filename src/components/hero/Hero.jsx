@@ -50,11 +50,6 @@ export default function Hero() {
       ref={scope}
       aria-labelledby="hero-title"
       className="relative isolate overflow-hidden pb-16 pt-24 sm:pb-24 sm:pt-28 lg:min-h-[100svh] lg:pb-20 lg:pt-28"
-      // Solid page colour hides the page grid behind the hero; the last stretch fades so the grid eases in below.
-      style={{
-        backgroundImage:
-          'linear-gradient(to bottom, rgb(var(--canvas)) 0%, rgb(var(--canvas)) 82%, rgb(var(--canvas) / 0) 100%)',
-      }}
     >
 
       {/* Bento: intro (large), illustration (tall), roles and highlights. */}

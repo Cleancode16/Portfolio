@@ -550,3 +550,6 @@ graphs from all three sites)
   solid `--canvas` background that fades over its last 18%, so no grid lines appear behind the hero and the grid
   eases in from the About section down.
 - Lint and build pass.
+- Follow-up ("hero section background design missing, add there also"): the user meant the old ruled lines, not
+  the grid. Removed the hero's solid `--canvas` background so the animated grid shows behind the hero too.
+  Lint and build pass.
