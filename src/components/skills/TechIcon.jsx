@@ -24,7 +24,7 @@ import {
   siTypescript,
   siVercel,
 } from 'simple-icons'
-import { Binary, Boxes, Cpu, Database, Network, Table2, Webhook } from 'lucide-react'
+import { Binary, Blocks, Boxes, Cpu, Database, Network, Table2, Waypoints, Webhook } from 'lucide-react'
 
 const BRAND = {
   siBootstrap,
@@ -53,7 +53,7 @@ const BRAND = {
   siVercel,
 }
 
-const CONCEPT = { Binary, Boxes, Cpu, Database, Network, Table2, Webhook }
+const CONCEPT = { Binary, Blocks, Boxes, Cpu, Database, Network, Table2, Waypoints, Webhook }
 
 const GRAPHITE = 'linear-gradient(180deg, #3a3a3e 0%, #1c1c1f 100%)'
 const SYSTEM_GRAY = 'linear-gradient(180deg, #8e8e96 0%, #5f5f66 100%)'

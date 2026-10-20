@@ -94,49 +94,49 @@ export default function Hero() {
         >
           {/* Scene centred in the space above the stack row and "Currently". */}
           <div className="flex flex-1 items-center justify-center">
-          <div className="relative mx-auto aspect-[600/540] w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-none">
-            <CodingIllustration className="absolute inset-0 h-full w-full" />
+            <div className="relative mx-auto aspect-[600/540] w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-none">
+              <CodingIllustration className="absolute inset-0 h-full w-full" />
 
-            <div data-hero="chip" aria-hidden="true" className="absolute right-0 top-[2%] hidden sm:block">
-              <div className="hero-float-a glass w-52 rounded-2xl px-4 py-3 shadow-lift">
-                <div className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                  CI pipeline · main
+              <div data-hero="chip" aria-hidden="true" className="absolute right-0 top-[2%] hidden sm:block">
+                <div className="hero-float-a glass w-52 rounded-2xl px-4 py-3 shadow-lift">
+                  <div className="flex items-center gap-1.5 font-mono text-[0.625rem] uppercase tracking-[0.14em] text-muted">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    CI pipeline · main
+                  </div>
+                  <ul className="mt-2.5 space-y-1.5 text-[0.8125rem]">
+                    {PIPELINE.map(({ step, state }) => (
+                      <li key={step} className="flex items-center justify-between gap-3">
+                        <span className="flex items-center gap-2 font-medium text-ink">
+                          {state === 'running' ? (
+                            <LoaderCircle
+                              aria-hidden="true"
+                              className="h-3.5 w-3.5 animate-spin text-accent motion-reduce:animate-none"
+                              strokeWidth={2.25}
+                            />
+                          ) : (
+                            <CircleCheck aria-hidden="true" className="h-3.5 w-3.5 text-success" strokeWidth={2.25} />
+                          )}
+                          {step}
+                        </span>
+                        <span className={`font-mono text-[0.6875rem] ${state === 'running' ? 'text-accent' : 'text-muted'}`}>
+                          {state}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="mt-2.5 space-y-1.5 text-[0.8125rem]">
-                  {PIPELINE.map(({ step, state }) => (
-                    <li key={step} className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-2 font-medium text-ink">
-                        {state === 'running' ? (
-                          <LoaderCircle
-                            aria-hidden="true"
-                            className="h-3.5 w-3.5 animate-spin text-accent motion-reduce:animate-none"
-                            strokeWidth={2.25}
-                          />
-                        ) : (
-                          <CircleCheck aria-hidden="true" className="h-3.5 w-3.5 text-success" strokeWidth={2.25} />
-                        )}
-                        {step}
-                      </span>
-                      <span className={`font-mono text-[0.6875rem] ${state === 'running' ? 'text-accent' : 'text-muted'}`}>
-                        {state}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
               </div>
-            </div>
 
-            <div data-hero="chip" aria-hidden="true" className="absolute bottom-[14%] right-0 sm:right-[2%]">
-              <div className="hero-float-b glass inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[0.75rem] font-medium text-ink shadow-lift">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-50 motion-reduce:hidden" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
-                </span>
-                Developer mode
+              <div data-hero="chip" aria-hidden="true" className="absolute bottom-[14%] right-0 sm:right-[2%]">
+                <div className="hero-float-b glass inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[0.75rem] font-medium text-ink shadow-lift">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-50 motion-reduce:hidden" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+                  </span>
+                  Developer mode
+                </div>
               </div>
             </div>
-          </div>
           </div>
 
           {/* Core stack as app icons (same set as the Skills Dock). */}

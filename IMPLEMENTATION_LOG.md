@@ -565,3 +565,19 @@ graphs from all three sites)
 - `Hero.jsx`: the Roles card is a flex column; the five roles are full-width rows (accent dot plus role) with
   dividers, spread evenly to fill the card, matching the Highlights card. Replaces the wrapped tag cluster.
   Lint and build pass.
+
+## Hero illustration card: centred scene, stack icons — 2026-10-20
+- `Hero.jsx`: the scene sits in a `flex-1` centring wrapper, so it is vertically centred in the space above the
+  bottom blocks. A new "Stack" row (above "Currently") shows the core stack as app icons via `TechIcon`, in
+  `dockStack` order (React.js, Node.js, Express.js, MongoDB, JavaScript, TypeScript, Tailwind CSS, Socket.io,
+  C++, Git), each with a title and screen-reader name and a small hover lift. "Currently" now follows with
+  `mt-5` instead of `mt-auto`. Lint and build pass.
+
+## Skills: System design (HLD, LLD) — 2026-10-20
+- `src/data/profile.js`: new skill group `{ id: 'design', title: 'System design', short: 'System Design' }` with
+  "High-Level Design" (Lucide `Waypoints`) and "Low-Level Design" (Lucide `Blocks`), placed before CS fundamentals.
+  It appears in the Skills filter ("System Design") and as two app-style tiles in the Launchpad grid.
+- `src/components/skills/TechIcon.jsx`: registered `Waypoints` and `Blocks` in the concept-icon map.
+- Lint and build pass. The build took 4m32s this time, attributed to machine load (likely the dev server running
+  alongside, or antivirus scanning the new `portfolio/.git` repo the user created); nothing in the change is
+  heavy.

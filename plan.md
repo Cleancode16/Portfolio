@@ -49,6 +49,8 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 35 | Aceternity-style grid-with-dots background for the page; no lines in the hero | Implemented |
 | 36 | Fill the empty space in the hero Highlights card with text | Implemented |
 | 37 | Roles: no compressed tags, one after another | Implemented |
+| 38 | Centre the hero image; fill the empty space below with icons | Implemented |
+| 39 | Add Low-Level Design and High-Level Design to the tools | New System Design skill group |
 
 ---
 
@@ -553,6 +555,20 @@ spread to fill the card. Lint and build passed.
 
 **Actions:** Replaced the wrapped tag cluster with one role per row (accent dot plus divider), spread to fill
 the card like the Highlights card. Lint and build passed.
+
+## 38. Centred hero scene with stack icons
+
+**Prompt:** "keep this image in the middle; lots of extra space at the bottom; add something there, any icons".
+
+**Actions:** The scene is vertically centred in the card, and a "Stack" row of app-style brand icons (the
+Skills Dock set) fills the space above the "Currently" list. Lint and build passed.
+
+## 39. HLD and LLD in Skills
+
+**Prompt:** "in the tools add the low level design and high level design".
+
+**Actions:** Added a "System design" skill group (filter: "System Design") with High-Level Design and Low-Level
+Design tiles (Lucide Waypoints and Blocks icons). Lint and build passed.
 
 ---
 

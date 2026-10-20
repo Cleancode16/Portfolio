@@ -179,6 +179,15 @@ export const skillGroups = [
     ],
   },
   {
+    id: 'design',
+    title: 'System design',
+    short: 'System Design',
+    items: [
+      { name: 'High-Level Design', icon: 'Waypoints' },
+      { name: 'Low-Level Design', icon: 'Blocks' },
+    ],
+  },
+  {
     id: 'fundamentals',
     title: 'CS fundamentals',
     short: 'Fundamentals',
