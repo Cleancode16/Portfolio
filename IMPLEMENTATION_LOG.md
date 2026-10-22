@@ -631,3 +631,10 @@ graphs from all three sites)
   1.25px, alpha 0.65, 1 per 95,000px², min 10; long: 320–520px, 240–380px/s, 2.25px, alpha 0.85, 1 per 260,000px²,
   min 4). Each beam stores its `kind` and `length`; line width and head opacity are set per beam.
 - Lint and build pass.
+
+## Step 45: Chart caption removed; Achievements heading
+
+- `src/components/sections/CompetitiveProgramming.jsx`: the caption paragraph renders only when `!hasLive`
+  (loading / fallback text); new `h3#cp-achievements` with `Trophy` icon above `cpHighlights`, list labelled by it,
+  item titles `h3` → `h4`.
+- Lint and build pass.

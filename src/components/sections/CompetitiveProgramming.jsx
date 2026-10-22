@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Trophy } from 'lucide-react'
 import SectionHeading from '../ui/SectionHeading'
 import TechIcon from '../skills/TechIcon'
 import { cpHighlights, cpPlatforms, cpSummary } from '../../data/profile'
@@ -180,30 +180,31 @@ export default function CompetitiveProgramming() {
             <div ref={chartSlot} className="mt-6">
               <Suspense fallback={skeleton}>{chart}</Suspense>
             </div>
-            <p className="mt-5 pt-4 text-[0.8125rem] leading-relaxed text-muted">
-              {hasLive ? (
-                <>
-                  {live.map((p) => `${p.platform}: ${p.contests} rated contests, current ${p.currentRating}, peak ${p.maxRating}.`).join(' ')}{' '}
-                  Fetched from each platform&apos;s public profile and refreshed hourly. Each platform uses its own rating
-                  system, so ratings are not directly comparable.
-                </>
-              ) : stats ? (
-                <>
-                  Live stats couldn&apos;t be loaded right now. Peak ratings from my résumé: LeetCode {cpPlatforms[0].rating},
-                  CodeChef {cpPlatforms[1].rating}, Codeforces {cpPlatforms[2].rating}.
-                </>
-              ) : (
-                'Loading contest history from LeetCode, CodeChef and Codeforces…'
-              )}
-            </p>
+            {/* Status note only while loading or when live stats are unavailable. */}
+            {!hasLive && (
+              <p className="mt-5 pt-4 text-[0.8125rem] leading-relaxed text-muted">
+                {stats ? (
+                  <>
+                    Live stats couldn&apos;t be loaded right now. Peak ratings from my résumé: LeetCode {cpPlatforms[0].rating},
+                    CodeChef {cpPlatforms[1].rating}, Codeforces {cpPlatforms[2].rating}.
+                  </>
+                ) : (
+                  'Loading contest history from LeetCode, CodeChef and Codeforces…'
+                )}
+              </p>
+            )}
           </figure>
         </div>
 
-        {/* Highlights */}
-        <ul className="mt-24 grid gap-x-12 sm:grid-cols-2">
+        {/* Achievements */}
+        <h3 id="cp-achievements" className="mt-24 flex items-center gap-2.5 text-headline text-ink" data-reveal>
+          <Trophy aria-hidden="true" className="h-6 w-6 text-accent" strokeWidth={1.75} />
+          Achievements
+        </h3>
+        <ul aria-labelledby="cp-achievements" className="mt-6 grid gap-x-12 sm:grid-cols-2">
           {cpHighlights.map((item) => (
             <li key={item.title} className="py-7" data-reveal="soft">
-              <h3 className="text-[1.125rem] tracking-tight text-ink">{item.title}</h3>
+              <h4 className="text-[1.125rem] tracking-tight text-ink">{item.title}</h4>
               <p className="mt-2 max-w-prose text-[0.9375rem] leading-relaxed text-muted">{item.text}</p>
             </li>
           ))}

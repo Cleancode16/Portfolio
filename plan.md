@@ -56,6 +56,7 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 42 | Codeforces missing from the ratings graph; remove the hero "Recent" block | Fixed / removed |
 | 43 | More moving lines in the background; remove thin separator lines between sections and components | Implemented |
 | 44 | Longer, thicker, faster lines in the background | Implemented |
+| 45 | Remove the live-stats caption under the chart; add an Achievements heading | Implemented |
 
 ---
 
@@ -657,6 +658,20 @@ between the sections and components black lines thin".
 **Actions:** A second kind of beam was added beside the existing soft ones: 320–520px long, 2.25px thick,
 240–380 px/s, slightly brighter (about 8 on a 1080p screen, at least 4). The short soft beams are unchanged.
 Lint and build passed.
+
+## 45. Chart caption removed; Achievements heading
+
+**Prompt:** Remove the text under the contest chart ("LeetCode: 18 rated contests, current 1776 … ratings are not
+directly comparable.") and add the heading "Achievements" above the list (600+ problems solved, Finalist CodeVerse
+2025, Problem setter Winter Coding Contest, Hackathons).
+
+**Actions:**
+- **Caption:** the per-platform summary and the "fetched … refreshed hourly … not directly comparable" note no
+  longer show when live data loads. The short loading message and the "couldn't be loaded" fallback (résumé peak
+  ratings) remain for those states only.
+- **Achievements:** a section-level heading with a trophy icon, styled like the Education/Certifications headings,
+  now sits above the four items; item titles became `h4` under it.
+- **Checks:** lint and build passed.
 
 ## Open items for the user
 
