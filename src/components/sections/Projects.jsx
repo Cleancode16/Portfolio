@@ -14,7 +14,7 @@ export default function Projects() {
   useScrollReveal(scope)
 
   return (
-    <section id="projects" ref={scope} aria-labelledby="projects-title" className="section-pad border-t border-line/60">
+    <section id="projects" ref={scope} aria-labelledby="projects-title" className="section-pad">
       <div className="shell">
         <SectionHeading
           id="projects-title"
@@ -28,7 +28,7 @@ export default function Projects() {
           ))}
         </div>
 
-        <div className="border-t border-line/70 pt-16 sm:pt-20">
+        <div className="pt-16 sm:pt-20">
           <h3 className="text-headline text-ink" data-reveal>
             More projects
           </h3>
@@ -40,7 +40,7 @@ export default function Projects() {
           </div>
         </div>
 
-        <div className="mt-16 border-t border-line/70 pt-10">
+        <div className="mt-16 pt-10">
           <a href={profile.github} target="_blank" rel="noreferrer" className="link-arrow">
             More on GitHub
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={2} />

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { ArrowUpRight, CornerDownLeft, FolderGit2, Hash, Moon, Search, Sun } from 'lucide-react'
 import { sections } from '../../data/navigation'
@@ -70,11 +70,11 @@ export default function CommandPalette() {
     }))
   }, [commands, query])
 
-  const close = () => {
+  const close = useCallback(() => {
     setOpen(false)
     setQuery('')
     setActiveIndex(0)
-  }
+  }, [setOpen])
 
   // Global shortcut: Cmd/Ctrl + K toggles the palette.
   useEffect(() => {
@@ -88,6 +88,18 @@ export default function CommandPalette() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [setOpen, setMenuOpen])
+
+  // Escape closes the palette wherever focus is (not only in the search field).
+  useEffect(() => {
+    if (!open) return undefined
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      close()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, close])
 
   // Focus management and scroll lock while open.
   useLayoutEffect(() => {
@@ -121,10 +133,7 @@ export default function CommandPalette() {
   }
 
   const onKeyDown = (event) => {
-    if (event.key === 'Escape') {
-      event.preventDefault()
-      close()
-    } else if (event.key === 'ArrowDown') {
+    if (event.key === 'ArrowDown') {
       event.preventDefault()
       setActiveIndex((index) => (results.length ? (index + 1) % results.length : 0))
     } else if (event.key === 'ArrowUp') {
@@ -170,9 +179,14 @@ export default function CommandPalette() {
             placeholder="Jump to a section or action…"
             className="h-14 w-full bg-transparent text-[1rem] text-ink placeholder:text-subtle focus:outline-none"
           />
-          <kbd className="hidden flex-none rounded-md border border-line px-1.5 py-0.5 font-mono text-[0.6875rem] text-muted sm:block">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close command menu"
+            className="hidden flex-none rounded-md border border-line px-1.5 py-0.5 font-mono text-[0.6875rem] text-muted transition-colors hover:text-ink sm:block"
+          >
             esc
-          </kbd>
+          </button>
         </div>
 
         <ul id="command-list" role="listbox" aria-label="Commands" className="max-h-[min(24rem,60vh)] overflow-y-auto p-2">

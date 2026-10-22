@@ -2,11 +2,10 @@ import { useRef } from 'react'
 import { useRecoilValue } from 'recoil'
 import { ArrowDown, ArrowRight, BadgeCheck, CircleCheck, LoaderCircle, Sparkles } from 'lucide-react'
 import CodingIllustration from './CodingIllustration'
-import TechIcon from '../skills/TechIcon'
 import { gsap, EASE } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
 import { introPlayingState } from '../../state/ui'
-import { dockStack, heroCurrently, heroRoles, heroStats, skillGroups } from '../../data/profile'
+import { heroRoles, heroStats } from '../../data/profile'
 
 // Decorative CI status beside the hero illustration: stages only, no figures.
 const PIPELINE = [
@@ -14,11 +13,6 @@ const PIPELINE = [
   { step: 'Tests', state: 'passed' },
   { step: 'Deploy', state: 'running' },
 ]
-
-// Core stack icons for the illustration card, in Dock order.
-const STACK = dockStack
-  .map((name) => skillGroups.flatMap((group) => group.items).find((item) => item.name === name))
-  .filter(Boolean)
 
 // Shared bento card surface for the hero: fine border, translucent fill, no shadow.
 const CARD = 'rounded-3xl border border-line/70 bg-surface/60 backdrop-blur-xl'
@@ -92,7 +86,7 @@ export default function Hero() {
           data-hero="visual"
           className={`${CARD} relative flex flex-col overflow-hidden p-3 sm:p-5 md:col-span-2 lg:col-span-5 lg:row-span-3`}
         >
-          {/* Scene centred in the space above the stack row and "Currently". */}
+          {/* Scene centred in the card. */}
           <div className="flex flex-1 items-center justify-center">
             <div className="relative mx-auto aspect-[600/540] w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-none">
               <CodingIllustration className="absolute inset-0 h-full w-full" />
@@ -139,43 +133,16 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Core stack as app icons (same set as the Skills Dock). */}
-          <div className="mt-4 border-t border-line/60 px-3 pt-5 sm:px-2">
-            <p id="hero-stack" className="font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted">
-              Stack
-            </p>
-            <ul aria-labelledby="hero-stack" className="mt-3 flex flex-wrap gap-2">
-              {STACK.map((item) => (
-                <li key={item.name} title={item.name} className="transition-transform duration-200 ease-apple hover:-translate-y-0.5">
-                  <TechIcon icon={item.icon} className="h-9 w-9" />
-                  <span className="sr-only">{item.name}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Fills the rest of the tall card with text instead of empty space. */}
-          <div className="mt-5 border-t border-line/60 px-3 pb-2 pt-5 sm:px-2">
-            <p className="font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted">Currently</p>
-            <ul className="mt-3 space-y-2.5">
-              {heroCurrently.map((item) => (
-                <li key={item} className="flex gap-3 text-[0.9375rem] leading-snug text-ink/85">
-                  <span aria-hidden="true" className="mt-[0.5rem] h-1.5 w-1.5 flex-none rounded-full bg-accent" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         {/* Roles */}
         <div data-hero="text" className={`${CARD} flex flex-col p-6 lg:col-span-4`}>
           <p id="hero-roles" className="flex items-center gap-2 text-[0.8125rem] font-medium text-muted">
             <BadgeCheck aria-hidden="true" className="h-4 w-4 text-accent" strokeWidth={1.75} />
-            Roles
+            Interested Roles
           </p>
           {/* One role per row, spread evenly down the card (matches the Highlights card). */}
-          <ul aria-labelledby="hero-roles" className="mt-3 flex flex-1 flex-col justify-between divide-y divide-line/60">
+          <ul aria-labelledby="hero-roles" className="mt-3 flex flex-1 flex-col justify-between">
             {heroRoles.map((role) => (
               <li
                 key={role}
@@ -198,7 +165,7 @@ export default function Hero() {
             Highlights
           </p>
           {/* One full-width row per stat: value, label and a short description, spread evenly down the card. */}
-          <dl className="mt-3 flex flex-1 flex-col justify-between divide-y divide-line/60">
+          <dl className="mt-3 flex flex-1 flex-col justify-between">
             {heroStats.map((stat) => (
               <div key={stat.label} className="flex items-baseline gap-4 py-3 last:pb-0">
                 <dt className="order-2 min-w-0 text-[0.8125rem] leading-snug text-muted">

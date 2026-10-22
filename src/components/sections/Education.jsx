@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Award, GraduationCap } from 'lucide-react'
+import { ArrowUpRight, Award, GraduationCap } from 'lucide-react'
 import SectionHeading from '../ui/SectionHeading'
 import BentoCard from '../about/BentoCard'
 import { EDUCATION_ILLUSTRATIONS as ILL } from '../education/illustrations'
@@ -16,8 +16,8 @@ const EDUCATION_CARDS = [
 ]
 
 const CERTIFICATION_CARDS = [
-  { key: 'smart-coder', Illustration: ILL.SmartCoder, title: smartCoder.title, subtitle: smartCoder.issuer, meta: smartCoder.year },
-  { key: 'dsa', Illustration: ILL.DsaCourse, title: dsaCourse.title, subtitle: dsaCourse.issuer },
+  { key: 'smart-coder', Illustration: ILL.SmartCoder, title: smartCoder.title, subtitle: smartCoder.issuer, meta: smartCoder.year, url: smartCoder.url },
+  { key: 'dsa', Illustration: ILL.DsaCourse, title: dsaCourse.title, subtitle: dsaCourse.issuer, url: dsaCourse.url },
 ]
 
 function Group({ icon: Icon, title, cards }) {
@@ -29,7 +29,7 @@ function Group({ icon: Icon, title, cards }) {
       </h3>
       {/* Square bento cards; data-reveal on the wrapper keeps the entrance transform off the hover lift. */}
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-        {cards.map(({ key, Illustration, title: cardTitle, subtitle, meta, result }) => (
+        {cards.map(({ key, Illustration, title: cardTitle, subtitle, meta, result, url }) => (
           <li key={key} data-reveal>
             <BentoCard Illustration={Illustration} square>
               <h4 className="text-[1.0625rem] font-semibold leading-snug tracking-tight text-ink">{cardTitle}</h4>
@@ -39,6 +39,13 @@ function Group({ icon: Icon, title, cards }) {
                   {meta && <span className="font-mono text-[0.75rem] text-muted">{meta}</span>}
                   {result && <span className="text-[0.9375rem] font-semibold text-ink">{result}</span>}
                 </div>
+              )}
+              {url && (
+                <a href={url} target="_blank" rel="noopener noreferrer" className="link-arrow mt-4 text-[0.9375rem]">
+                  View certificate
+                  <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+                  <span className="sr-only"> for {cardTitle} (opens in a new tab)</span>
+                </a>
               )}
             </BentoCard>
           </li>
@@ -53,7 +60,7 @@ export default function Education() {
   useScrollReveal(scope)
 
   return (
-    <section id="education" ref={scope} aria-labelledby="education-title" className="section-pad border-t border-line/60">
+    <section id="education" ref={scope} aria-labelledby="education-title" className="section-pad">
       <div className="shell">
         <SectionHeading
           id="education-title"

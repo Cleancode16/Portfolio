@@ -6,7 +6,6 @@ import { dockStack, skillGroups } from '../../data/profile'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { gsap, ScrollTrigger, prefersReducedMotion } from '../../lib/motion'
 
-const FILTERS = [{ id: 'all', short: 'All' }, ...skillGroups]
 const allItems = skillGroups.flatMap((group) => group.items)
 const dockItems = dockStack.map((name) => allItems.find((item) => item.name === name)).filter(Boolean)
 
@@ -23,13 +22,10 @@ export default function Skills() {
   const filterRef = useRef(null)
   const pillRef = useRef(null)
   const enteredRef = useRef(false)
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState(skillGroups[0].id)
   useScrollReveal(scope)
 
-  const groups = useMemo(
-    () => (filter === 'all' ? skillGroups : skillGroups.filter((group) => group.id === filter)),
-    [filter],
-  )
+  const groups = useMemo(() => skillGroups.filter((group) => group.id === filter), [filter])
 
   // Launchpad entrance: tiles stagger in the first time the grid scrolls into view,
   // and again whenever the category filter changes.
@@ -67,7 +63,7 @@ export default function Skills() {
   }, [filter])
 
   return (
-    <section id="skills" ref={scope} aria-labelledby="skills-title" className="section-pad border-t border-line/60">
+    <section id="skills" ref={scope} aria-labelledby="skills-title" className="section-pad">
       <div className="shell">
         <SectionHeading
           id="skills-title"
@@ -92,7 +88,7 @@ export default function Skills() {
               aria-hidden="true"
               className="absolute left-0 top-1 h-[calc(100%-0.5rem)] rounded-[7px] bg-surface opacity-0 shadow-soft"
             />
-            {FILTERS.map((item) => (
+            {skillGroups.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -114,7 +110,6 @@ export default function Skills() {
             <section key={group.id} aria-labelledby={`skills-${group.id}`}>
               <h3 id={`skills-${group.id}`} className="eyebrow flex items-center gap-3">
                 {group.title}
-                <span aria-hidden="true" className="h-px flex-1 bg-line/70" />
                 <span className="font-mono normal-case tracking-normal">{group.items.length}</span>
               </h3>
               <ul className="mt-5 grid grid-cols-3 gap-x-2 gap-y-3 min-[420px]:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">

@@ -11,7 +11,7 @@ export default function Experience() {
   useScrollReveal(scope)
 
   return (
-    <section id="experience" ref={scope} aria-labelledby="experience-title" className="section-pad border-t border-line/60">
+    <section id="experience" ref={scope} aria-labelledby="experience-title" className="section-pad">
       <div className="shell">
         <SectionHeading
           id="experience-title"
@@ -25,7 +25,7 @@ export default function Experience() {
             return (
               <li
                 key={item.role}
-                className="grid gap-4 border-t border-line/70 py-10 md:grid-cols-12 md:gap-8"
+                className="grid gap-4 py-10 md:grid-cols-12 md:gap-8"
                 data-reveal
               >
                 <div className="md:col-span-4">

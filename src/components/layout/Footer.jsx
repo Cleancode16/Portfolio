@@ -4,7 +4,7 @@ import { sections } from '../../data/navigation'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-line/60">
+    <footer>
       <div className="shell flex flex-col gap-10 py-12 md:flex-row md:items-start md:justify-between">
         <div className="max-w-sm">
           <p className="text-[0.9375rem] font-semibold tracking-tight text-ink">{profile.name}</p>
@@ -32,7 +32,7 @@ export default function Footer() {
         </nav>
       </div>
 
-      <div className="shell flex flex-col gap-3 border-t border-line/60 py-6 text-[0.8125rem] text-muted sm:flex-row sm:items-center sm:justify-between">
+      <div className="shell flex flex-col gap-3 py-6 text-[0.8125rem] text-muted sm:flex-row sm:items-center sm:justify-between">
         <p>
           © {new Date().getFullYear()} {profile.name}. Built with React, Tailwind CSS, Recoil and GSAP.
         </p>

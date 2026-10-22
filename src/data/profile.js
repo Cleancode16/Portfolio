@@ -43,20 +43,13 @@ export const aboutCards = [
   },
 ]
 
-// Roles shown in the hero, in the owner's order.
+// Roles the owner is interested in, shown in the hero in the owner's order.
 export const heroRoles = [
   'Software Development Engineer',
   'Full-Stack Developer',
   'Frontend Developer',
   'Backend Developer',
   'Full-Stack AI Developer',
-]
-
-// "Currently" list at the bottom of the hero illustration card (the developer's stated interests).
-export const heroCurrently = [
-  'Building full-stack products with React, Node.js and MongoDB',
-  'Studying system design and scalable architecture',
-  'Competing on LeetCode, CodeChef and Codeforces',
 ]
 
 // Résumé-backed figures shown in the hero's highlights card.
@@ -113,8 +106,17 @@ export const education = [
 ]
 
 export const certifications = [
-  { title: 'Smart Coder Certification', issuer: 'Smart Interviews', year: '2025' },
-  { title: 'Mastering Data Structures & Algorithms using C and C++', issuer: 'Udemy (Abdul Bari)' },
+  {
+    title: 'Smart Coder Certification',
+    issuer: 'Smart Interviews',
+    year: '2025',
+    url: 'https://smartinterviews.in/certificate/d1710086',
+  },
+  {
+    title: 'Mastering Data Structures & Algorithms using C and C++',
+    issuer: 'Udemy (Abdul Bari)',
+    url: 'https://www.udemy.com/certificate/UC-9ed65133-4e2f-4a06-a074-d4e919462e24/',
+  },
 ]
 
 // Technologies from the résumé. `icon` keys resolve in components/skills/TechIcon.jsx:

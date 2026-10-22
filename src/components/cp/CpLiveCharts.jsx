@@ -154,7 +154,7 @@ export default function CpLiveCharts({ platforms }) {
       </div>
 
       {/* Contests + selected platform stats */}
-      <div className="mt-6 grid gap-6 border-t border-line/60 pt-6 sm:grid-cols-[1.4fr_1fr]">
+      <div className="mt-6 grid gap-6 pt-6 sm:grid-cols-[1.4fr_1fr]">
         <div>
           <p className="text-[0.8125rem] font-medium text-muted">Rated contests by platform</p>
           <div className="mt-3 h-[120px] w-full" aria-hidden="true">

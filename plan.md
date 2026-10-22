@@ -51,6 +51,11 @@ File-level detail for each step is in `IMPLEMENTATION_LOG.md`; setup instruction
 | 37 | Roles: no compressed tags, one after another | Implemented |
 | 38 | Centre the hero image; fill the empty space below with icons | Implemented |
 | 39 | Add Low-Level Design and High-Level Design to the tools | New System Design skill group |
+| 40 | Interested roles; new hero card content; recruiter-friendly project points; no "All" skills filter; certificate links; drifting background | Implemented |
+| 41 | Esc should close the search (command palette) | Implemented |
+| 42 | Codeforces missing from the ratings graph; remove the hero "Recent" block | Fixed / removed |
+| 43 | More moving lines in the background; remove thin separator lines between sections and components | Implemented |
+| 44 | Longer, thicker, faster lines in the background | Implemented |
 
 ---
 
@@ -580,6 +585,78 @@ Design tiles (Lucide Waypoints and Blocks icons). Lint and build passed.
 - **Every step passed:** `npm run lint` and `npm run build`.
 - **Privacy:** no email address or phone number in the UI or the built bundle; the recipient and API key exist
   only in server environment variables.
+
+## 40. Interested roles, hero card, project points, certificates, background
+
+**Prompt (summary):** Change "Roles" to interested roles. Remove the hero's Stack and Currently blocks and add
+something different. Rewrite the project content as clear points recruiters and hiring managers can scan. Remove
+the "All" option from the tech-stack filter and keep the rest. Link the Smart Interviews and Udemy certificates.
+Replace the magnifying cursor effect in the background with lines that move continuously and smoothly.
+
+**Actions:**
+- **Roles:** the hero card heading is now "Interested Roles"; the list is unchanged.
+- **Hero card:** Stack icons and the Currently list were removed. A "Recent" block replaced them: four résumé
+  milestones as small icon tiles (Frontend Developer Intern at Intripid, Finalist CodeVerse 2025, problem setter for
+  the Winter Coding Contest, Smart Coder certified). Data: `heroMilestones` in `profile.js` (`heroCurrently` removed).
+- **Projects:** each project now has 3–4 `highlights` written verb-first and impact-first, shown as bullet points on
+  the card in place of the summary paragraph. The case study now reads Problem → Solution → Highlights → What I built
+  (bold feature name plus one line each) → Impact. No new figures were invented; every point restates facts
+  already verified against the repos.
+- **Skills filter:** "All" was removed; the filter opens on Languages and the other categories remain.
+- **Certificates:** both certificate cards have a "View certificate" link (new tab) to
+  smartinterviews.in/certificate/d1710086 and the Udemy certificate UC-9ed65133-….
+- **Background:** the cursor bend/glow (magnifying effect) was removed. The grid and dots now drift slowly and
+  continuously, and six soft accent beams glide along the grid lines. Time-based animation (smooth at any frame
+  rate), pauses when the tab is hidden, and stays static with reduced motion. Also runs on touch devices now.
+- **Checks:** lint and build passed.
+
+## 41. Esc closes the search
+
+**Prompt:** "in search functionality if i click esc button it need to be closed".
+
+**Actions:** Esc was only handled while the search field had focus, so it did nothing after clicking elsewhere in
+the panel. Esc is now handled at window level while the palette is open, and the "esc" badge is a clickable close
+button. Lint and build passed.
+
+## 42. Codeforces missing from the ratings graph; hero "Recent" removed
+
+**Prompts:** "ratings graph codeforces is missing". Mid-task: remove the hero's "Recent" block (added in step 40).
+
+**Actions:**
+- **Diagnosis:** the chart shows only platforms that `/api/cp-stats` returns without an error. Locally all three
+  load (LeetCode 18, CodeChef 15, Codeforces 7 contests), so the deployed function's Codeforces request was failing.
+  Codeforces often rejects or times out requests from cloud IPs. The failure then stuck around: partial results
+  were cached in memory for an hour and served by Vercel's edge, stale, for up to a day.
+- **Server (`server/cp-stats.js`):** Codeforces is retried once with JSON/User-Agent headers. Partial results are
+  cached for 5 minutes (instead of an hour) and sent with `s-maxage=300`, so a missing platform comes back soon.
+- **Browser fallback:** the Codeforces API allows cross-origin requests (`Access-Control-Allow-Origin: *`), so if
+  the server response lacks Codeforces, the page fetches it directly (`src/lib/codeforces.js`) and adds it to the chart.
+- **Hero:** the "Recent" milestones block and its `heroMilestones` data were removed; the illustration card now
+  holds only the illustration and its floating chips.
+- **Checks:** lint and build passed; the stats handler returned all three platforms locally.
+
+## 43. More moving lines; no separator lines
+
+**Prompt:** "i want more lines need to move in the background continuously and also remove the separation lines
+between the sections and components black lines thin".
+
+**Actions:**
+- **Background:** beam count now scales with the screen (about 22 at 1920×1080, at least 10), slightly longer
+  (160px) and with a wider speed range (60–160 px/s); new beams enter sooner after one leaves.
+- **Separators removed:** the top border of every section (About, Projects, Skills, Experience, Education, Problem
+  Solving, Contact), the lines between project rows and before "More projects", between experience entries, CP
+  highlights and stats, the chart footer, the Skills category heading rule, the hero Roles/Highlights row dividers,
+  and both footer lines. Spacing is unchanged.
+- **Kept:** card outlines, and the window chrome of the case-study window, search panel and mobile menu.
+- **Checks:** lint and build passed.
+
+## 44. Longer, thicker, faster background lines
+
+**Prompt:** "some more long length lines with thick goes on with some extra speed at the background".
+
+**Actions:** A second kind of beam was added beside the existing soft ones: 320–520px long, 2.25px thick,
+240–380 px/s, slightly brighter (about 8 on a 1080p screen, at least 4). The short soft beams are unchanged.
+Lint and build passed.
 
 ## Open items for the user
 

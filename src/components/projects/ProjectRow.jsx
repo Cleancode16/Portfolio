@@ -50,7 +50,7 @@ export default function ProjectRow({ project, index, variant = 'featured' }) {
   return (
     <article
       aria-labelledby={`${project.id}-title`}
-      className={compact ? 'flex flex-col' : 'border-t border-line/70 py-16 first:border-t-0 sm:py-20'}
+      className={compact ? 'flex flex-col' : 'py-16 sm:py-20'}
     >
       <div className={compact ? 'flex flex-1 flex-col gap-7' : 'grid items-center gap-10 lg:grid-cols-2 lg:gap-16'}>
         <div className={reversed ? 'lg:order-2' : ''} data-reveal>
@@ -75,12 +75,18 @@ export default function ProjectRow({ project, index, variant = 'featured' }) {
           <p className={`mt-2 font-medium text-ink/70 ${compact ? 'text-[1rem]' : 'text-lg'}`} data-reveal="soft">
             {project.tagline}
           </p>
-          <p
-            className={`max-w-prose leading-relaxed text-muted ${compact ? 'mt-4 text-[0.9375rem]' : 'mt-5'}`}
+          <ul
+            className={`max-w-prose space-y-2.5 leading-relaxed text-muted ${compact ? 'mt-4 text-[0.9375rem]' : 'mt-5'}`}
+            aria-label="Key highlights"
             data-reveal="soft"
           >
-            {project.summary}
-          </p>
+            {project.highlights.map((point) => (
+              <li key={point} className="flex gap-3">
+                <span aria-hidden="true" className="mt-[0.6rem] h-1.5 w-1.5 flex-none rounded-full bg-accent/80" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
 
           <ul className="mt-6 flex flex-wrap gap-1.5" aria-label="Technology stack" data-reveal="soft">
             {project.stack.map((tech) => (

@@ -5,18 +5,23 @@ import { prefersReducedMotion } from '../../lib/motion'
 
 const GRID = 80 // px between lines
 const DOT = 1.1 // dot radius (≈2px dots)
-const RADIUS = 160 // px around the cursor that reacts
-const PUSH = 14 // max displacement in px
-const STEP = 12 // sampling step along each line (px)
-const FOLLOW = 0.14 // pointer smoothing (lerp factor per frame)
-const FADE = 0.08 // intensity smoothing in/out
+const DRIFT_X = 9 // grid drift, px per second
+const DRIFT_Y = 6
+// Two kinds of light beams: many short soft ones, and fewer long, thick, fast streaks.
+// density: beams per px² of screen; length (px), speed (px/s) are [min, max] ranges.
+const BEAM_KINDS = [
+  { density: 1 / 95000, min: 10, length: [140, 180], speed: [60, 160], width: 1.25, alpha: 0.65 }, // ≈22 at 1080p
+  { density: 1 / 260000, min: 4, length: [320, 520], speed: [240, 380], width: 2.25, alpha: 0.85 }, // ≈8 at 1080p
+]
+const between = ([min, max]) => min + Math.random() * (max - min)
 
 /**
- * Page background inspired by Aceternity's "grid with dots and animations":
- * an 80px grid with dots at the intersections. Near the mouse the lines bend
- * away in a soft wave and glow in the accent colour; everything eases back
- * when the mouse leaves. Drawn on one canvas (fast), scrolls with the page,
- * follows the theme, and stays static for touch and reduced-motion visitors.
+ * Page background: an 80px grid with dots at the intersections that drifts
+ * slowly and continuously, while accent beams glide along the lines: many
+ * short soft ones plus fewer long, thick, faster streaks (more of both on
+ * larger screens). No pointer interaction. Drawn on one canvas, scrolls with the page,
+ * follows the theme, pauses when the tab is hidden, and stays static for
+ * reduced-motion visitors.
  */
 export default function GridBackground() {
   const canvasRef = useRef(null)
@@ -28,9 +33,10 @@ export default function GridBackground() {
     const ctx = canvas?.getContext('2d')
     if (!canvas || !ctx) return undefined
 
-    const interactive = !prefersReducedMotion() && window.matchMedia('(pointer: fine)').matches
-    const state = { width: 0, height: 0, dpr: 1, tx: -9999, ty: -9999, mx: -9999, my: -9999, target: 0, intensity: 0 }
+    const animated = !prefersReducedMotion()
+    const state = { width: 0, height: 0, dpr: 1, time: 0, last: 0 }
     let colors = { line: '', dot: '', accent: '0 0 0' }
+    let beams = []
     let frame = 0
 
     const readColors = () => {
@@ -43,93 +49,96 @@ export default function GridBackground() {
       }
     }
 
-    // Displacement of a point away from the (smoothed) pointer, with a smooth falloff.
-    const displace = (x, y) => {
-      if (state.intensity < 0.001) return [x, y, 0]
-      const dx = x - state.mx
-      const dy = y - state.my
-      const dist = Math.hypot(dx, dy)
-      if (dist >= RADIUS || dist === 0) return [x, y, 0]
-      const falloff = (1 - dist / RADIUS) ** 2 * state.intensity
-      return [x + (dx / dist) * PUSH * falloff, y + (dy / dist) * PUSH * falloff, falloff]
+    // A beam runs along one grid line (horizontal or vertical), in grid units so it rides with the drift.
+    const spawnBeam = (beam, initial = false) => {
+      const { kind } = beam
+      const horizontal = Math.random() < 0.5
+      const span = horizontal ? state.width : state.height
+      beam.horizontal = horizontal
+      beam.line = Math.floor(Math.random() * ((horizontal ? state.height : state.width) / GRID + 2))
+      // First beams start on screen; later ones enter from off-screen, staggered.
+      beam.length = between(kind.length)
+      beam.pos = initial ? Math.random() * span : -beam.length - Math.random() * span * 0.3
+      beam.speed = between(kind.speed)
+      beam.span = span
+      return beam
     }
 
     const draw = () => {
-      const { width, height, dpr } = state
+      const { width, height, dpr, time } = state
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, width, height)
-      const offsetY = -(window.scrollY % GRID)
+      const ox = (time * DRIFT_X) % GRID
+      const oy = (time * DRIFT_Y - window.scrollY) % GRID
+      const offsetX = ox - GRID
+      const offsetY = (oy > 0 ? oy : oy + GRID) - GRID
 
-      // Base grid: every line as one path (distorted near the pointer).
+      // Grid lines: one path.
       ctx.beginPath()
-      for (let x = 0; x <= width + GRID; x += GRID) {
-        for (let y = -GRID; y <= height + GRID; y += STEP) {
-          const [px, py] = displace(x, y + offsetY)
-          if (y === -GRID) ctx.moveTo(px, py)
-          else ctx.lineTo(px, py)
-        }
+      for (let x = offsetX; x <= width + GRID; x += GRID) {
+        ctx.moveTo(x, 0)
+        ctx.lineTo(x, height)
       }
-      for (let y = offsetY - GRID; y <= height + GRID; y += GRID) {
-        for (let x = 0; x <= width + GRID; x += STEP) {
-          const [px, py] = displace(x, y)
-          if (x === 0) ctx.moveTo(px, py)
-          else ctx.lineTo(px, py)
-        }
+      for (let y = offsetY; y <= height + GRID; y += GRID) {
+        ctx.moveTo(0, y)
+        ctx.lineTo(width, y)
       }
       ctx.strokeStyle = colors.line
       ctx.lineWidth = 1
       ctx.stroke()
 
-      // Glow: re-stroke only the segments near the pointer in the accent colour.
-      if (state.intensity > 0.01) {
-        ctx.lineWidth = 1.25
-        const segment = (x1, y1, x2, y2) => {
-          const [ax, ay, fa] = displace(x1, y1)
-          const [bx, by, fb] = displace(x2, y2)
-          const glow = Math.max(fa, fb)
-          if (glow <= 0.01) return
-          ctx.strokeStyle = `rgb(${colors.accent} / ${Math.min(0.7, glow * 0.9)})`
+      // Beams: a soft gradient streak with a bright head.
+      if (animated) {
+        ctx.lineCap = 'round'
+        for (const beam of beams) {
+          const head = beam.pos
+          const tail = head - beam.length
+          const fixed = (beam.horizontal ? offsetY : offsetX) + beam.line * GRID
+          const [x1, y1, x2, y2] = beam.horizontal ? [tail, fixed, head, fixed] : [fixed, tail, fixed, head]
+          const gradient = ctx.createLinearGradient(x1, y1, x2, y2)
+          gradient.addColorStop(0, `rgb(${colors.accent} / 0)`)
+          gradient.addColorStop(1, `rgb(${colors.accent} / ${beam.kind.alpha})`)
+          ctx.strokeStyle = gradient
+          ctx.lineWidth = beam.kind.width
           ctx.beginPath()
-          ctx.moveTo(ax, ay)
-          ctx.lineTo(bx, by)
+          ctx.moveTo(x1, y1)
+          ctx.lineTo(x2, y2)
           ctx.stroke()
-        }
-        const x0 = Math.floor((state.mx - RADIUS) / GRID) * GRID
-        const y0 = Math.floor((state.my - RADIUS - offsetY) / GRID) * GRID + offsetY
-        for (let x = Math.max(0, x0); x <= state.mx + RADIUS; x += GRID) {
-          for (let y = state.my - RADIUS; y < state.my + RADIUS; y += STEP) segment(x, y, x, y + STEP)
-        }
-        for (let y = y0; y <= state.my + RADIUS; y += GRID) {
-          for (let x = state.mx - RADIUS; x < state.mx + RADIUS; x += STEP) segment(x, y, x + STEP, y)
         }
       }
 
       // Dots at the intersections.
-      for (let x = 0; x <= width + GRID; x += GRID) {
+      ctx.fillStyle = colors.dot
+      ctx.beginPath()
+      for (let x = offsetX; x <= width + GRID; x += GRID) {
         for (let y = offsetY; y <= height + GRID; y += GRID) {
-          const [px, py, glow] = displace(x, y)
-          ctx.fillStyle = glow > 0.01 ? `rgb(${colors.accent} / ${0.35 + glow * 0.6})` : colors.dot
-          ctx.beginPath()
-          ctx.arc(px, py, DOT + glow * 1.2, 0, Math.PI * 2)
-          ctx.fill()
+          ctx.moveTo(x + DOT, y)
+          ctx.arc(x, y, DOT, 0, Math.PI * 2)
         }
       }
+      ctx.fill()
     }
 
-    // Animation loop: runs only while the pointer effect is easing; stops when settled.
-    const tick = () => {
-      state.mx += (state.tx - state.mx) * FOLLOW
-      state.my += (state.ty - state.my) * FOLLOW
-      state.intensity += (state.target - state.intensity) * FADE
+    // Continuous loop driven by elapsed time, so motion stays smooth at any frame rate.
+    const tick = (now) => {
+      const dt = state.last ? Math.min((now - state.last) / 1000, 0.05) : 0
+      state.last = now
+      state.time += dt
+      for (const beam of beams) {
+        beam.pos += beam.speed * dt
+        if (beam.pos - beam.length > beam.span) spawnBeam(beam)
+      }
       draw()
-      const settled =
-        Math.abs(state.target - state.intensity) < 0.002 &&
-        Math.abs(state.tx - state.mx) < 0.3 &&
-        Math.abs(state.ty - state.my) < 0.3
-      frame = settled ? 0 : requestAnimationFrame(tick)
+      frame = requestAnimationFrame(tick)
     }
-    const wake = () => {
-      if (!frame) frame = requestAnimationFrame(tick)
+    const start = () => {
+      if (!animated || frame) return
+      state.last = 0
+      frame = requestAnimationFrame(tick)
+    }
+    const stop = () => {
+      cancelAnimationFrame(frame)
+      frame = 0
     }
 
     const resize = () => {
@@ -138,25 +147,14 @@ export default function GridBackground() {
       state.height = window.innerHeight
       canvas.width = Math.round(state.width * state.dpr)
       canvas.height = Math.round(state.height * state.dpr)
+      const area = state.width * state.height
+      beams = BEAM_KINDS.flatMap((kind) =>
+        Array.from({ length: Math.max(kind.min, Math.round(area * kind.density)) }, () => spawnBeam({ kind }, true)),
+      )
       draw()
     }
 
-    const onMove = (event) => {
-      if (event.pointerType !== 'mouse') return
-      if (state.intensity < 0.01) {
-        // Jump the smoothed pointer to the entry point instead of sweeping across the screen.
-        state.mx = event.clientX
-        state.my = event.clientY
-      }
-      state.tx = event.clientX
-      state.ty = event.clientY
-      state.target = 1
-      wake()
-    }
-    const onLeave = () => {
-      state.target = 0
-      wake()
-    }
+    // Without the loop (reduced motion), redraw on scroll so the grid still moves with the page.
     let scrollFrame = 0
     const onScroll = () => {
       if (frame || scrollFrame) return
@@ -165,6 +163,7 @@ export default function GridBackground() {
         draw()
       })
     }
+    const onVisibility = () => (document.hidden ? stop() : start())
 
     drawRef.current = () => {
       readColors()
@@ -172,21 +171,16 @@ export default function GridBackground() {
     }
     readColors()
     resize()
+    start()
     window.addEventListener('resize', resize)
     window.addEventListener('scroll', onScroll, { passive: true })
-    if (interactive) {
-      window.addEventListener('pointermove', onMove, { passive: true })
-      document.documentElement.addEventListener('pointerleave', onLeave)
-      window.addEventListener('blur', onLeave)
-    }
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
-      cancelAnimationFrame(frame)
+      stop()
       cancelAnimationFrame(scrollFrame)
       window.removeEventListener('resize', resize)
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('pointermove', onMove)
-      document.documentElement.removeEventListener('pointerleave', onLeave)
-      window.removeEventListener('blur', onLeave)
+      document.removeEventListener('visibilitychange', onVisibility)
       drawRef.current = () => {}
     }
   }, [])

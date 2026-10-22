@@ -581,3 +581,53 @@ graphs from all three sites)
 - Lint and build pass. The build took 4m32s this time, attributed to machine load (likely the dev server running
   alongside, or antivirus scanning the new `portfolio/.git` repo the user created); nothing in the change is
   heavy.
+
+## Step 40: Interested roles, hero "Recent", project highlights, certificates, drifting grid
+
+- `src/data/profile.js`: `heroCurrently` replaced by `heroMilestones` (icon key, title, detail); `url` added to both
+  certifications.
+- `src/components/hero/Hero.jsx`: Stack row and Currently list removed (and the `TechIcon`/`dockStack`/`skillGroups`
+  imports); new "Recent" grid of milestone tiles; Roles heading is "Interested Roles".
+- `src/data/projects.js`: `summary` replaced by `highlights` (string array); `implementation` items are now
+  `{ title, text }`.
+- `src/components/projects/ProjectRow.jsx`: renders `highlights` as a bullet list.
+- `src/components/projects/CaseStudyModal.jsx`: sections Problem, Solution, Highlights, What I built, Impact.
+- `src/components/sections/Skills.jsx`: `FILTERS`/"All" removed; default filter is the first skill group.
+- `src/components/sections/Education.jsx`: "View certificate" link when a card has a `url`.
+- `src/components/layout/GridBackground.jsx`: rewritten. No pointer listeners; continuous rAF loop with grid drift
+  (9px/s, 6px/s) and six gradient beams along grid lines; stops on `visibilitychange` hidden; reduced motion draws
+  once and redraws on scroll.
+- Lint and build pass.
+
+## Step 41: Esc closes the command palette
+
+- `src/components/layout/CommandPalette.jsx`: `close` wrapped in `useCallback`; window `keydown` listener for
+  Escape while open (removed from the input handler); the "esc" `kbd` is now a close `button`.
+- Lint and build pass.
+
+## Step 42: Codeforces in the ratings graph; hero "Recent" removed
+
+- `server/cp-stats.js`: Codeforces fetch retried once (800ms pause) with `Accept`/`User-Agent` headers; cache entries
+  carry a `ttl` (1h complete, 5min partial); `Cache-Control` is `s-maxage=300, stale-while-revalidate=60` when any
+  platform failed.
+- `src/lib/codeforces.js` (new): browser-side Codeforces fetch, same shape as the server's.
+- `src/components/sections/CompetitiveProgramming.jsx`: if `/api/cp-stats` fails or lacks Codeforces, fetch Codeforces
+  directly and merge it; static résumé chart only if nothing loads.
+- `src/components/hero/Hero.jsx`, `src/data/profile.js`: "Recent" block, icon map and `heroMilestones` removed.
+- Lint and build pass.
+
+## Step 43: More beams; separator lines removed
+
+- `src/components/layout/GridBackground.jsx`: `BEAMS` replaced by `BEAM_DENSITY` (1 per 95,000px²) with `BEAM_MIN` 10;
+  `BEAM_LENGTH` 160; `BEAM_SPEED` 60–160; respawn stagger 0.3 of the span.
+- Removed `border-t border-line/60|70`, `first:border-t-0` and `divide-y divide-line/60` from
+  `src/components/sections/*.jsx`, `ProjectRow.jsx`, `CpLiveCharts.jsx`, `Footer.jsx` and `Hero.jsx`; removed the
+  `h-px` rule in Skills category headings.
+- Lint and build pass.
+
+## Step 44: Long, thick, fast beams
+
+- `src/components/layout/GridBackground.jsx`: beam constants replaced by `BEAM_KINDS` (soft: 140–180px, 60–160px/s,
+  1.25px, alpha 0.65, 1 per 95,000px², min 10; long: 320–520px, 240–380px/s, 2.25px, alpha 0.85, 1 per 260,000px²,
+  min 4). Each beam stores its `kind` and `length`; line width and head opacity are set per beam.
+- Lint and build pass.

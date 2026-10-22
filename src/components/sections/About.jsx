@@ -10,7 +10,7 @@ export default function About() {
   useScrollReveal(scope)
 
   return (
-    <section id="about" ref={scope} aria-labelledby="about-title" className="section-pad border-t border-line/60">
+    <section id="about" ref={scope} aria-labelledby="about-title" className="section-pad">
       <div className="shell">
         <SectionHeading
           id="about-title"

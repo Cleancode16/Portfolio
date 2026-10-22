@@ -128,7 +128,7 @@ export default function Contact() {
   const submitting = status === 'submitting'
 
   return (
-    <section id="contact" ref={scope} aria-labelledby="contact-title" className="section-pad border-t border-line/60">
+    <section id="contact" ref={scope} aria-labelledby="contact-title" className="section-pad">
       <div className="shell grid gap-14 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-5">
           <SectionHeading

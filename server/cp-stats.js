@@ -7,6 +7,8 @@
 //   LeetCode    public GraphQL endpoint used by its own profile pages (unofficial)
 //   CodeChef    rating history embedded in the public profile page (no official API)
 // Each source fails independently; a failure returns { error } for that platform only.
+// Codeforces sometimes rejects or times out requests from cloud IPs, so it is retried once,
+// partial results are cached briefly, and the browser falls back to calling Codeforces directly.
 
 const HANDLES = {
   leetcode: 'cleancode16',
@@ -15,6 +17,7 @@ const HANDLES = {
 }
 const TIMEOUT_MS = 9000
 const CACHE_MS = 60 * 60 * 1000
+const PARTIAL_CACHE_MS = 5 * 60 * 1000 // when a platform failed, retry it sooner
 const UA = 'Mozilla/5.0 (portfolio stats; +https://github.com/Cleancode16)'
 
 let cache = null
@@ -44,9 +47,19 @@ function summarise(platform, handle, url, history, contests) {
   }
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 async function codeforces() {
   const handle = HANDLES.codeforces
-  const response = await fetchWithTimeout(`https://codeforces.com/api/user.rating?handle=${handle}`)
+  const url = `https://codeforces.com/api/user.rating?handle=${handle}`
+  const headers = { Accept: 'application/json', 'User-Agent': UA }
+  let response
+  try {
+    response = await fetchWithTimeout(url, { headers })
+  } catch {
+    await wait(800)
+    response = await fetchWithTimeout(url, { headers })
+  }
   const json = await response.json()
   if (json.status !== 'OK' || !Array.isArray(json.result)) throw new Error('Unexpected Codeforces response')
   const history = json.result.map((entry) => ({
@@ -112,7 +125,7 @@ const SOURCES = [
 ]
 
 export async function getCpStats(now = Date.now()) {
-  if (cache && now - cache.at < CACHE_MS) return cache.body
+  if (cache && now - cache.at < cache.ttl) return cache.body
 
   const settled = await Promise.allSettled(SOURCES.map(([, , load]) => load()))
   const platforms = settled.map((result, i) => {
@@ -124,7 +137,8 @@ export async function getCpStats(now = Date.now()) {
 
   const body = { fetchedAt: new Date(now).toISOString(), platforms }
   // Only cache when at least one platform succeeded, so a transient outage retries on the next request.
-  if (platforms.some((p) => !p.error)) cache = { at: now, body }
+  const partial = platforms.some((p) => p.error)
+  if (platforms.some((p) => !p.error)) cache = { at: now, body, ttl: partial ? PARTIAL_CACHE_MS : CACHE_MS }
   return body
 }
 
@@ -133,10 +147,16 @@ export async function handleCpStats({ method }) {
     return { status: 405, body: { error: 'Method not allowed.' }, headers: { Allow: 'GET' } }
   }
   const body = await getCpStats()
+  const partial = body.platforms.some((p) => p.error)
   return {
     status: 200,
     body,
-    // Let Vercel's edge cache serve it for an hour and revalidate in the background.
-    headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' },
+    // Complete results: Vercel's edge serves them for an hour and revalidates in the background.
+    // Partial results: cache only briefly so a missing platform reappears soon.
+    headers: {
+      'Cache-Control': partial
+        ? 'public, s-maxage=300, stale-while-revalidate=60'
+        : 'public, s-maxage=3600, stale-while-revalidate=86400',
+    },
   }
 }

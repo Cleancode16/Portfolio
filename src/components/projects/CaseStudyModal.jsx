@@ -185,20 +185,32 @@ export default function CaseStudyModal({ project, originRef, onClose }) {
           <div className={`mt-9 grid gap-x-10 ${zoomed ? 'md:grid-cols-2' : ''}`}>
             <div>
               <Section label="Problem">{project.problem}</Section>
-              <Section label="Approach">{project.approach}</Section>
-            </div>
-            <div className={zoomed ? 'md:border-l md:border-line/60 md:pl-10' : ''}>
-              <Section label="Implementation">
+              <Section label="Solution">{project.approach}</Section>
+              <Section label="Highlights">
                 <ul className="space-y-2.5">
-                  {project.implementation.map((item) => (
-                    <li key={item} className="flex gap-3">
+                  {project.highlights.map((point) => (
+                    <li key={point} className="flex gap-3">
                       <span aria-hidden="true" className="mt-[0.6rem] h-1 w-1 flex-none rounded-full bg-accent" />
-                      <span>{item}</span>
+                      <span>{point}</span>
                     </li>
                   ))}
                 </ul>
               </Section>
-              <Section label="Outcome">{project.outcome}</Section>
+            </div>
+            <div className={zoomed ? 'md:border-l md:border-line/60 md:pl-10' : ''}>
+              <Section label="What I built">
+                <ul className="space-y-3">
+                  {project.implementation.map(({ title, text }) => (
+                    <li key={title} className="flex gap-3">
+                      <span aria-hidden="true" className="mt-[0.6rem] h-1 w-1 flex-none rounded-full bg-accent" />
+                      <span>
+                        <span className="font-semibold text-ink">{title}.</span> {text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+              <Section label="Impact">{project.outcome}</Section>
             </div>
           </div>
         </div>

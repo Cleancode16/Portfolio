@@ -4,6 +4,7 @@ import SectionHeading from '../ui/SectionHeading'
 import TechIcon from '../skills/TechIcon'
 import { cpHighlights, cpPlatforms, cpSummary } from '../../data/profile'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { fetchCodeforces } from '../../lib/codeforces'
 
 // Recharts is loaded only when the chart approaches the viewport, keeping it out of the initial bundle.
 const CpRatingsChart = lazy(() => import('../cp/CpRatingsChart'))
@@ -73,12 +74,30 @@ export default function CompetitiveProgramming() {
   useEffect(() => {
     if (!showChart) return undefined
     const controller = new AbortController()
-    fetch('/api/cp-stats', { signal: controller.signal })
-      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(`HTTP ${response.status}`))))
-      .then((data) => setStats({ platforms: Array.isArray(data?.platforms) ? data.platforms : [] }))
-      .catch((error) => {
-        if (error?.name !== 'AbortError') setStats({ error: true })
-      })
+    const { signal } = controller
+    const load = async () => {
+      let platforms = []
+      try {
+        const response = await fetch('/api/cp-stats', { signal })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const data = await response.json()
+        platforms = Array.isArray(data?.platforms) ? data.platforms : []
+      } catch (error) {
+        if (error?.name === 'AbortError') return
+      }
+      // Codeforces missing from the server response: fetch it from the browser instead.
+      const hasCodeforces = platforms.some((p) => p.platform === 'Codeforces' && !p.error && p.history?.length)
+      if (!hasCodeforces) {
+        try {
+          const codeforces = await fetchCodeforces(signal)
+          platforms = [...platforms.filter((p) => p.platform !== 'Codeforces'), codeforces]
+        } catch (error) {
+          if (error?.name === 'AbortError') return
+        }
+      }
+      setStats(platforms.length ? { platforms } : { error: true })
+    }
+    load()
     return () => controller.abort()
   }, [showChart])
 
@@ -103,7 +122,7 @@ export default function CompetitiveProgramming() {
       id="problem-solving"
       ref={scope}
       aria-labelledby="cp-title"
-      className="section-pad border-t border-line/60 bg-elevated/40"
+      className="section-pad bg-elevated/40"
     >
       <div className="shell">
         <SectionHeading
@@ -133,7 +152,7 @@ export default function CompetitiveProgramming() {
               Competitive programming helps me develop algorithmic thinking, evaluate complexity, and improve through
               consistent practice.
             </p>
-            <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-line/70 pt-6 lg:grid-cols-1 lg:gap-5" data-reveal="soft">
+            <dl className="mt-8 grid grid-cols-3 gap-4 pt-6 lg:grid-cols-1 lg:gap-5" data-reveal="soft">
               {summary.map((item) => (
                 <div key={item.label} className="flex flex-col-reverse">
                   <dt className="mt-1 text-[0.8125rem] leading-snug text-muted">{item.label}</dt>
@@ -161,7 +180,7 @@ export default function CompetitiveProgramming() {
             <div ref={chartSlot} className="mt-6">
               <Suspense fallback={skeleton}>{chart}</Suspense>
             </div>
-            <p className="mt-5 border-t border-line/60 pt-4 text-[0.8125rem] leading-relaxed text-muted">
+            <p className="mt-5 pt-4 text-[0.8125rem] leading-relaxed text-muted">
               {hasLive ? (
                 <>
                   {live.map((p) => `${p.platform}: ${p.contests} rated contests, current ${p.currentRating}, peak ${p.maxRating}.`).join(' ')}{' '}
@@ -183,7 +202,7 @@ export default function CompetitiveProgramming() {
         {/* Highlights */}
         <ul className="mt-24 grid gap-x-12 sm:grid-cols-2">
           {cpHighlights.map((item) => (
-            <li key={item.title} className="border-t border-line/70 py-7" data-reveal="soft">
+            <li key={item.title} className="py-7" data-reveal="soft">
               <h3 className="text-[1.125rem] tracking-tight text-ink">{item.title}</h3>
               <p className="mt-2 max-w-prose text-[0.9375rem] leading-relaxed text-muted">{item.text}</p>
             </li>
